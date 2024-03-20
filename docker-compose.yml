@@ -1,0 +1,21 @@
+version: '3'
+services:
+  instantaneousgram-user:
+    build: 
+      context: ./InstantaneousGram-Users
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  instantaneousgram-login:
+    build: 
+      context: ./Instantaneousgram-login
+      dockerfile: Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
