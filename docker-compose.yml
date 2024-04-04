@@ -4,7 +4,7 @@ services:
     build: 
       context: ./InstantaneousGram-Users
       dockerfile: Dockerfile
-    image: slothh/instantaneousgram/instantaneousgram-user:latest
+    image: slothh/instantaneousgram-user:latest
     ports:
       - "5000:80"
     environment:
@@ -15,7 +15,7 @@ services:
     build: 
       context: ./InstantaneousGram-Login
       dockerfile: Dockerfile
-    image: slothh/instantaneousgram/instantaneousgram-login:latest
+    image: slothh/instantaneousgram-login:latest
     ports:
       - "5002:80"
     environment:
