@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main, Development ]
+    branches: [ main, Development,CI/CD ]
 
 jobs:
   build:
@@ -11,12 +11,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
+    - name: Dump GitHub USERNAME
+      env:
+        GITHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      run: echo "$GITHUB_USERNAME"
+    - name: Dump GitHub PASSWORD
+      env:
+        GITHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: echo "$GITHUB_PASSWORD"
     - name: Login to DockerHub
-      uses: docker/login-action@v1 
+      uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: ${{ secrets.DOCKERHUB_USERNAME}}
+        password: ${{ secrets.DOCKER_PASSWORD}}
 
     - name: Build and push
       run: |
