@@ -2,7 +2,7 @@ version: '3'
 services:
   instantaneousgram-user:
     build: 
-      context: ./InstantaneousGram-UserPorifile
+      context: ./InstantaneousGram-UserProfile
       dockerfile: Dockerfile
     image: slothh/instantaneousgram-UserProfileServices:latest
     ports:
