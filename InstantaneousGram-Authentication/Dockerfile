@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["InstantaneousGram-Login.csproj", "."]
-RUN dotnet restore "./InstantaneousGram-Login.csproj"
+COPY ["InstantaneousGram-Authentication.csproj", "."]
+RUN dotnet restore "./InstantaneousGram-Authentication.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "InstantaneousGram-Login.csproj" -c Release -o /app/build
+RUN dotnet build "InstantaneousGram-Authentication.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "InstantaneousGram-Login.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "InstantaneousGram-Authentication.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "InstantaneousGram-Login.dll"]
+ENTRYPOINT ["dotnet", "InstantaneousGram-Authentication.dll"]
