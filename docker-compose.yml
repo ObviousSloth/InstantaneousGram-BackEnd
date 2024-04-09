@@ -2,9 +2,9 @@ version: '3'
 services:
   instantaneousgram-user:
     build: 
-      context: ./InstantaneousGram-UserProfile
+      context: ./InstantaneousGram-UserPorifile
       dockerfile: Dockerfile
-    image: slothh/instantaneousgram-UserProfileServices:latest
+    image: slothh/instantaneousgram-userprofileservices:latest
     ports:
       - "5000:80"
     environment:
@@ -15,7 +15,7 @@ services:
     build: 
       context: ./InstantaneousGram-Authentication
       dockerfile: Dockerfile
-    image: slothh/instantaneousgram-AuthenticationServices:latest
+    image: slothh/instantaneousgram-authenticationservices:latest
     ports:
       - "5002:80"
     environment:
