@@ -2,18 +2,20 @@ version: '3'
 services:
   instantaneousgram-user:
     build: 
-      context: ./InstantaneousGram-Users
+      context: ./InstantaneousGram-UserProfile
       dockerfile: Dockerfile
+    image: slothh/instantaneousgram-userprofileservices:latest
     ports:
       - "5000:80"
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
 
-  instantaneousgram-login:
+  instantaneousgram-Authentication:
     build: 
-      context: ./Instantaneousgram-login
+      context: ./InstantaneousGram-Authentication
       dockerfile: Dockerfile
+    image: slothh/instantaneousgram-authenticationservices:latest
     ports:
       - "5002:80"
     environment:
