@@ -1,0 +1,34 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/Test",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44370
+        }
+      ],
+      "UpstreamPathTemplate": "/ApiGateway/Test",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+    }
+    //,
+    /*      {
+        "DownstreamPathTemplate": "/api/service2/{everything}",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "service2-host",
+            "Port": 80
+          }
+        ],
+        "UpstreamPathTemplate": "/service2/{everything}",
+        "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+      }
+    ],
+//    "GlobalConfiguration": {
+//      "BaseUrl": "http://your-api-gateway-url"
+//    }
+  */
+  ]
+}
