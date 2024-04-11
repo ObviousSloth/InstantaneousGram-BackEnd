@@ -1,4 +1,4 @@
-namespace InstantaneousGram_Login
+namespace InstantaneousGram_Authentication
 {
     public class WeatherForecast
     {

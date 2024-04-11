@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace InstantaneousGram_Login.Controllers
+namespace InstantaneousGram_Authentication.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InstantaneousGram_Login.Controllers
+namespace InstantaneousGram_Authentication.Controllers
 {
     [Route("api/Value")]
     [ApiController]
@@ -11,6 +11,7 @@ namespace InstantaneousGram_Login.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+
             return new string[] { "value1", "value2" };
         }
     }

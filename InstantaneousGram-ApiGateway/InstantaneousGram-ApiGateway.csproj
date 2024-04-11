@@ -7,7 +7,7 @@
     <RootNamespace>InstantaneousGram_ApiGateway</RootNamespace>
     <UserSecretsId>7234d5d1-2d76-4a37-8564-893ffb6dce38</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
+    <DockerfileContext>..\InstantaneousGram</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>

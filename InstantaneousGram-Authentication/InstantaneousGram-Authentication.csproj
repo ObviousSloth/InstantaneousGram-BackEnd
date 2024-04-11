@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>InstantaneousGram_Login</RootNamespace>
+    <RootNamespace>InstantaneousGram_Authentication</RootNamespace>
     <UserSecretsId>63b6273c-d033-4934-9a64-ef5471c8f9fa</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>

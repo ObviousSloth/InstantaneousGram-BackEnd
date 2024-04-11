@@ -8,8 +8,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5192
+          "Host": "InstantaneousGram-Authentication",
+          "Port": 80
         }
       ]
     },
@@ -21,8 +21,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5246
+          "Host": "InstantaneousGram-UserProfile",
+          "Port": 80
         }
       ]
     }
