@@ -11,7 +11,11 @@
           "Host": "InstantaneousGram-Authentication",
           "Port": 80
         }
-      ]
+      ],
+      "AuthenticationOptions": {
+        "AllowedScopes": [],
+        "AuthenticationProviderKey": "IdentityApiKey"
+      }
     },
     {
       "UpstreamPathTemplate": "/ApiGateway/WeatherForecast",
