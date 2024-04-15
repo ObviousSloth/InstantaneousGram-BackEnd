@@ -12,10 +12,10 @@
           "Port": 80
         }
       ],
-      "AuthenticationOptions": {
+      /*"AuthenticationOptions": {
         "AllowedScopes": [],
         "AuthenticationProviderKey": "IdentityApiKey"
-      }
+      }*/
     },
     {
       "UpstreamPathTemplate": "/ApiGateway/WeatherForecast",
