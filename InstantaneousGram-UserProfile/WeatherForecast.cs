@@ -1,4 +1,4 @@
-namespace InstantaneousGram_Users
+namespace InstantaneousGram_UserProfile
 {
     public class WeatherForecast
     {
