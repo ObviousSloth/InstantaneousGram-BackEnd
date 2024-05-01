@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace InstantaneousGram_Users.Controllers
+namespace InstantaneousGram_UserProfile.Controllers
 {
     [ApiController]
     [Route("[controller]")]
