@@ -1,13 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using InstantaneousGram_UserProfile.Data;
+using Microsoft.Extensions.Configuration;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
 //Add dbContext
 builder.Services.AddDbContext<InstantaneousGram_UserProfileContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("InstantaneousGram_UserProfileContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserProfileContext' not found.")));
-
+builder.Services.AddDbContext<InstantaneousGram_UsersContextSQLite>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("InstantaneousGram_UserContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserProfileContext' not found.")));
 // Add services to the container.
 
 builder.Services.AddControllers();
