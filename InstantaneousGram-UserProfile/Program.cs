@@ -6,6 +6,19 @@ using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+          builder =>
+          {
+              builder.WithOrigins(
+                  "http://localhost:3000",
+                  "http://localhost:5500")
+                     .AllowAnyHeader()
+                     .AllowAnyMethod();
+          });
+});
 
 //Add dbContext
 builder.Services.AddDbContext<InstantaneousGram_UserProfileContext>(options =>
@@ -31,7 +44,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseCors("MyPolicy"); // Use CORS in all environments
 app.MapControllers();
 
 app.Run();
