@@ -17,7 +17,7 @@ namespace InstantaneousGram_UserProfile.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=Database/InstantaneousGramUsers.db");
+            optionsBuilder.UseSqlite("InstantaneousGram_UserContext");
         }
 
         public DbSet<InstantaneousGram_UserProfile.Models.User> Users { get; set; } = default!;
