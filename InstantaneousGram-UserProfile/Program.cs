@@ -22,11 +22,15 @@ builder.Services.AddCors(options =>
 });
 
 //Add dbContext
-builder.Services.AddDbContext<InstantaneousGram_UserProfileContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("InstantaneousGram_UserProfileContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserProfileContext' not found.")));
+//builder.Services.AddDbContext<InstantaneousGram_UserProfileContext>(options =>
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("InstantaneousGram_UserProfileContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserProfileContext' not found.")));
 builder.Services.AddDbContext<InstantaneousGram_UsersContextSQLite>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("InstantaneousGram_UserContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserProfileContext' not found.")));
-
+    options.UseSqlite(builder.Configuration.GetConnectionString("InstantaneousGram_UserContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserContext' not found.")));
+Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
+Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
+Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
+Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
+Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
 
 // Add services to the container.
 builder.Services.AddControllers();
