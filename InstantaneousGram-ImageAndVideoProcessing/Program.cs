@@ -4,6 +4,20 @@ using dotenv.net;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+          builder =>
+          {
+              builder.WithOrigins(
+                  "http://localhost:3000",
+                  "http://localhost:5502")
+                     .AllowAnyHeader()
+                     .AllowAnyMethod();
+          });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -34,6 +48,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// Apply CORS policy to all requests
+app.UseCors("MyPolicy");
 
 app.MapControllers();
 

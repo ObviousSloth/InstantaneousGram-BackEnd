@@ -11,6 +11,8 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network
 
   instantaneousgram-UserProfile:
     build: 
@@ -18,10 +20,12 @@ services:
       dockerfile: Dockerfile
     image: slothh/instantaneousgram-userprofileservices:latest
     ports:
-      - "5500:80"
+      - "5500:80"  # Unique port for UserProfile service
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network
 
   instantaneousgram-Authentication:
     build: 
@@ -29,7 +33,54 @@ services:
       dockerfile: Dockerfile
     image: slothh/instantaneousgram-authenticationservices:latest
     ports:
-      - "55003:80"
+      - "5501:80"  # Unique port for Authentication service
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network 
+
+  instantaneousgram-ImageAndVideoProcessing:
+    build: 
+      context: ./InstantaneousGram-ImageAndVideoProcessing
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-imageandvideoprocessing:latest
+    env_file:
+      - ./InstantaneousGram-ImageAndVideoProcessing/.env
+    ports:
+      - "5502:80"  # Unique port for ImageAndVideoProcessing service
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network
+
+  instantaneousgram-ContentManagement:
+    build: 
+      context: ./InstantaneousGram-ContentManagement
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-contentmanagement:latest
+    ports:
+      - "5503:80"  # Unique port for ContentManagement service
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network
+
+  instantaneousgram-LikeAndComment:
+    build: 
+      context: ./InstantaneousGram-LikeAndComment
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-likeandcomment:latest
+    ports:
+      - "5504:80"  # Unique port for Like and Comment service
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network  
+
+networks:
+  instantaneousgram-network :
+    driver: bridge
