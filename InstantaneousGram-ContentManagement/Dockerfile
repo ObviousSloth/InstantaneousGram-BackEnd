@@ -13,6 +13,7 @@ COPY . .
 WORKDIR "/src/."
 RUN dotnet build "InstantaneousGram-ContentManagement.csproj" -c Release -o /app/build
 
+
 FROM build AS publish
 RUN dotnet publish "InstantaneousGram-ContentManagement.csproj" -c Release -o /app/publish /p:UseAppHost=false
 

@@ -7,13 +7,13 @@ using System.Text;
 namespace InstantaneousGram_RabbitMq
 
 {
-    public class RabbitMQService : IRabbitMQService, IDisposable // Define a class RabbitMQService that implements IRabbitMQService interface and IDisposable interface for resource cleanup
+    public class RabbitMQService : IRabbitMQService, IDisposable 
     {
-        private readonly ConnectionFactory _connectionFactory; // Declare a readonly field for ConnectionFactory to create RabbitMQ connections
+        private readonly ConnectionFactory _connectionFactory; 
         private IConnection _connection; // Declare a field for RabbitMQ connection
         private IModel _channel; // Declare a field for RabbitMQ channel
 
-        // Constructor to initialize RabbitMQService with connection details
+       
         public RabbitMQService(string hostName, int port, string userName, string password)
         {
             // Create a new ConnectionFactory instance with provided connection details

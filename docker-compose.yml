@@ -11,6 +11,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+
     networks:
       - instantaneousgram-network
 
@@ -24,8 +25,10 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+  
     networks:
       - instantaneousgram-network
+      
 
   instantaneousgram-Authentication:
     build: 
@@ -37,6 +40,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+
     networks:
       - instantaneousgram-network 
 
@@ -52,6 +56,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+
     networks:
       - instantaneousgram-network
 
@@ -65,6 +70,7 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+
     networks:
       - instantaneousgram-network
 
@@ -80,6 +86,19 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - instantaneousgram-network  
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - instantaneousgram-network
+
 
 networks:
   instantaneousgram-network :

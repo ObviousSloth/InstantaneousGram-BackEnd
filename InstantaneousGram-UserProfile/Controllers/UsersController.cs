@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InstantaneousGram_UserProfile.Data;
 using InstantaneousGram_UserProfile.Models;
+using System.Text;
+
 
 namespace InstantaneousGram_UserProfile.Controllers
 {
@@ -15,10 +17,12 @@ namespace InstantaneousGram_UserProfile.Controllers
     public class UsersController : ControllerBase
     {
         private readonly InstantaneousGram_UsersContextSQLite _context;
+    
 
         public UsersController(InstantaneousGram_UsersContextSQLite context)
         {
             _context = context;
+          
         }
 
         // GET: api/Users
@@ -166,6 +170,9 @@ namespace InstantaneousGram_UserProfile.Controllers
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+
+            // Publish user deletion event to RabbitMQ
+            //_rabbitMQService.PublishMessage("user_deletion_exchange", "", Encoding.UTF8.GetBytes($"UserDeleted:{id}"));
 
             return NoContent();
         }
