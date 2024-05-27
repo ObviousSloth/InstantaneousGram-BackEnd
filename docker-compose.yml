@@ -3,7 +3,7 @@ services:
 
   instantaneousgram-Apigateway:
     build:
-      context: ./InstantaneousGram-APiGateway
+      context: ./InstantaneousGram-ApiGateway
       dockerfile: Dockerfile
     image: slothh/instantaneousgram-apigatewayservices:latest
     ports:
