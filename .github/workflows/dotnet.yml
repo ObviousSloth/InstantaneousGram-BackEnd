@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        microservice: [InstantaneousGram-Authentication, InstantaneousGram-UserProfile]  # replace with your microservice names
+        microservice: [InstantaneousGram-Authentication, InstantaneousGram-UserProfile, InstantaneousGram-ApiGateway, InstantaneousGram-ContentManagement, InstantaneousGram-ImageAndVideoProcessing, InstantaneousGram-LikeAndComment]  
 
     steps:
     - uses: actions/checkout@v4
