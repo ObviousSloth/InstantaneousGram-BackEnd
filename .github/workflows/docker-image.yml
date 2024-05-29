@@ -11,10 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: List Files (Debugging)
-        run: |
-          ls -R
-
       - name: Create .env file
         run: |
           echo "CLOUDINARY_URL=${{ secrets.CLOUDINARY_URL }}" > ./InstantaneousGram-ImageAndVideoProcessing/.env
