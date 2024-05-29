@@ -57,11 +57,11 @@ spec:
             secretKeyRef:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
-        - name: ConnectionString  # Environment variable name in your application
+        - name: ConnectionStrings__InstantaneousGram_UserContext
           valueFrom:
-                configMapKeyRef:
-                  name: db-connection-configmap
-                  key: connection-string
+            secretKeyRef:
+              name: connection-string-secret
+              key: InstantaneousGram_UserContext
         resources:
           limits:
             cpu: "1"

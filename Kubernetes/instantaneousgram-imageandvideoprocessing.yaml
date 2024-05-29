@@ -62,18 +62,13 @@ spec:
             secretKeyRef:
               name: cloudinary-secret
               key: CLOUDINARY_URL
-        - name: ConnectionString  # Environment variable name in your application
-          valueFrom:
-            secretKeyRef:
-              name: db-connection   # Name of the Secret
-              key: connectionString  # Key within the Secret              
         resources:
-                limits:
-                  cpu: "1"
-                  memory: "512Mi"
-                requests:
-                  cpu: "0.5"
-                  memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+          requests:
+            cpu: "0.5"
+            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -85,6 +80,6 @@ spec:
   selector:
     app: instantaneousgram-imageandvideoprocessing
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
+  - protocol: TCP
+    port: 80
+    targetPort: 80

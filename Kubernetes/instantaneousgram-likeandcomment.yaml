@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: instantaneousgram-likeandcomment
-        image: slothh/instantaneousgram-likeandcommentservices:latest
+        image: slothh/instantaneousgram-likeandcomment:latest
         ports:
         - containerPort: 80
         env:
@@ -57,18 +57,13 @@ spec:
             secretKeyRef:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
-        - name: ConnectionString  # Environment variable name in your application
-          valueFrom:
-            secretKeyRef:
-              name: db-connection   # Name of the Secret
-              key: connectionString  # Key within the Secret              
         resources:
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: "1"
+            memory: "512Mi"
           requests:
-            cpu: 250m
-            memory: 256Mi
+            cpu: "0.5"
+            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -80,6 +75,6 @@ spec:
   selector:
     app: instantaneousgram-likeandcomment
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
+  - protocol: TCP
+    port: 80
+    targetPort: 80
