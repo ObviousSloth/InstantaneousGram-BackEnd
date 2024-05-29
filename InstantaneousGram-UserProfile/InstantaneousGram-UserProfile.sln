@@ -5,8 +5,6 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantaneousGram-UserProfile", "InstantaneousGram-UserProfile.csproj", "{1FAE8319-CF3E-45D7-A6A0-87331A7F863C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InstantaneousGram-RabbitMq", "..\InstantaneousGram-RabbitMq\InstantaneousGram-RabbitMq.csproj", "{2876BCEF-279B-482C-8F0B-F93888E51065}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{1FAE8319-CF3E-45D7-A6A0-87331A7F863C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FAE8319-CF3E-45D7-A6A0-87331A7F863C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FAE8319-CF3E-45D7-A6A0-87331A7F863C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2876BCEF-279B-482C-8F0B-F93888E51065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2876BCEF-279B-482C-8F0B-F93888E51065}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2876BCEF-279B-482C-8F0B-F93888E51065}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2876BCEF-279B-482C-8F0B-F93888E51065}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
