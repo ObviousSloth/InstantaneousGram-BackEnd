@@ -4,7 +4,7 @@ metadata:
   name: rabbitmq
   namespace: instantaneousgram
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: rabbitmq
@@ -25,11 +25,11 @@ spec:
         - name: rabbitmq-log
           mountPath: /var/log/rabbitmq
         resources:
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
           requests:
             cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
             memory: "256Mi"
       volumes:
       - name: rabbitmq-data
@@ -38,22 +38,23 @@ spec:
       - name: rabbitmq-log
         hostPath:
           path: /log/rabbitmq
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq
+  name: rabbitmq-clusterip
   namespace: instantaneousgram
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: rabbitmq
   ports:
-    - name: amqp
-      protocol: TCP
-      port: 5672
-      targetPort: 5672
-    - name: management
-      protocol: TCP
-      port: 15672
-      targetPort: 15672
+  - name: amqp
+    protocol: TCP
+    port: 5672
+    targetPort: 5672
+  - name: management
+    protocol: TCP
+    port: 15672
+    targetPort: 15672

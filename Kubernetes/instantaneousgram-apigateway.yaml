@@ -4,7 +4,7 @@ metadata:
   name: instantaneousgram-apigateway
   namespace: instantaneousgram
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: instantaneousgram-apigateway
@@ -75,6 +75,7 @@ spec:
   selector:
     app: instantaneousgram-apigateway
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+

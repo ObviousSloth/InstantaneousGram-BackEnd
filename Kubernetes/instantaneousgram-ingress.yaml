@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: instantaneousgram-ingress
+  namespace: instantaneousgram
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  tls:
+  - hosts:
+    - instantaneousgram.ddns.net
+    secretName: tls-secret # Optional: if you have an SSL certificate
+  rules:
+  - host: instantaneousgram.ddns.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-apigateway
+            port:
+              number: 80

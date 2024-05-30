@@ -4,7 +4,7 @@ metadata:
   name: instantaneousgram-likeandcomment
   namespace: instantaneousgram
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: instantaneousgram-likeandcomment
@@ -58,20 +58,20 @@ spec:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
         resources:
-          limits:
-            cpu: "1"
-            memory: "512Mi"
           requests:
-            cpu: "0.5"
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
             memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: instantaneousgram-likeandcomment
+  name: instantaneousgram-likeandcommentclusterip
   namespace: instantaneousgram
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: instantaneousgram-likeandcomment
   ports:

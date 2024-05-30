@@ -4,7 +4,7 @@ metadata:
   name: instantaneousgram-contentmanagement
   namespace: instantaneousgram
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: instantaneousgram-contentmanagement
@@ -60,23 +60,24 @@ spec:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
         resources:
-          limits:
-            cpu: "1"
-            memory: "512Mi"
           requests:
-            cpu: "0.5"
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
             memory: "256Mi"
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: instantaneousgram-contentmanagement
+  name: instantaneousgram-contentmanagement-clusterip
   namespace: instantaneousgram
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: instantaneousgram-contentmanagement
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: 80        
