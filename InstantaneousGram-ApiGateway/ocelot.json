@@ -1,34 +1,70 @@
 {
   "Routes": [
     {
-      "UpstreamPathTemplate": "/Values",
-      "UpstreamHttpMethod": [ "Get" ],
-
-      "DownstreamPathTemplate": "/api/Value",
+      "DownstreamPathTemplate": "/api/authentication",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "InstantaneousGram-Authentication",
+          "Host": "instantaneousgram-authentication-clusterip",
           "Port": 80
         }
       ],
-      /*"AuthenticationOptions": {
-        "AllowedScopes": [],
-        "AuthenticationProviderKey": "IdentityApiKey"
-      }*/
+      "UpstreamPathTemplate": "/authentication",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "UpstreamPathTemplate": "/ApiGateway/WeatherForecast",
-      "UpstreamHttpMethod": [ "Get" ],
-
-      "DownstreamPathTemplate": "/WeatherForecast",
+      "DownstreamPathTemplate": "/api/contentmanagement",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "InstantaneousGram-UserProfile",
+          "Host": "instantaneousgram-contentmanagement-clusterip",
           "Port": 80
         }
-      ]
+      ],
+      "UpstreamPathTemplate": "/contentmanagement",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/imageandvideoprocessing",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "instantaneousgram-imageandvideoprocessing-clusterip",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/imageandvideoprocessing",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/userprofile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "instantaneousgram-userprofile-clusterip",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/userprofile",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/userprofile/test",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "instantaneousgram-userprofile-clusterip",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/userprofile/test",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
-  ]
+  ],
+  "GlobalConfiguration": {
+    "ServiceDiscoveryProvider": {
+      "Namespace": "instantaneousgram",
+      "Type": "KubernetesServiceDiscoveryProvider"
+    }
+  }
 }

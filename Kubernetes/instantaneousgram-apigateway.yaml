@@ -58,20 +58,20 @@ spec:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
         resources:
-          limits:
-            cpu: "1"
-            memory: "512Mi"
           requests:
-            cpu: "0.5"
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
             memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: instantaneousgram-apigateway
+  name: instantaneousgram-apigateway-service
   namespace: instantaneousgram
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: instantaneousgram-apigateway
   ports:
