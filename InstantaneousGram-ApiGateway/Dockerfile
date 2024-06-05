@@ -19,4 +19,5 @@ RUN dotnet publish "InstantaneousGram-ApiGateway.csproj" -c Release -o /app/publ
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ocelot.json ./ocelot.json
 ENTRYPOINT ["dotnet", "InstantaneousGram-ApiGateway.dll"]
