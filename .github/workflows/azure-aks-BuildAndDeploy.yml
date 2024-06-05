@@ -43,7 +43,7 @@ env:
   CONTAINER_NAME: "instantaneousgram-apigatewayservices"
   RESOURCE_GROUP: "InstantaneousGram"
   CLUSTER_NAME: "InstantKluster"
-  DOCKER_COMPOSE_FILE_PATH: "./"
+  DOCKER_COMPOSE_FILE_PATH: "./docker-compose.yml"
 
 jobs:
   buildImage:
