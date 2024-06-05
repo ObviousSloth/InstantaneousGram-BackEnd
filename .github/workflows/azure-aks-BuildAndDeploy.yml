@@ -173,7 +173,7 @@ jobs:
           kompose-version: "latest"
         id: bake
 
-        - name: Adjust manifest names
+      - name: Adjust manifest names
         run: |
           find . -type f -name "*.yaml" -exec sed -i 's/instantaneousgram-imageandvideoprocessing-InstantaneousGram-ImageAndVideoProcessing--env/imgproc-env/' {} +
           find . -type f -name "*.yaml" -exec sed -i 's/extensions\/v1beta1/apps\/v1/' {} +
