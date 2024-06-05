@@ -20,13 +20,13 @@ jobs:
     strategy:
       matrix:
         service:
-          - apigateway
-          - authentication
-          - contentmanagement
-          - imageandvideoprocessing
-          - likeandcomment
-          - userprofile
-          - rabbitmq
+          - InstantaneousGram-ApiGateway
+          - InstantaneousGram-Authentication
+          - InstantaneousGram-ContentManagement
+          - InstantaneousGram-ImageAndVideoProcessing
+          - InstantaneousGram-LikeAndComment
+          - InstantaneousGram-UserProfile
+        
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,7 +34,9 @@ jobs:
       - name: Set up appsettings and .env
         run: |
           echo '${{ secrets.APPSETTINGS_JSON }}' > ./${{ matrix.service }}/appsettings.json
-          echo '${{ secrets.IMAGE_ENV }}' > ./${{ matrix.service }}/.env
+          if [ "${{ matrix.service }}" == "imageandvideoprocessing" ]; then
+            echo '${{ secrets.CLOUDINARY_URL }}' > ./${{ matrix.service }}/.env
+          fi
 
       - name: Azure login
         uses: azure/login@v1.4.6
@@ -65,3 +67,35 @@ jobs:
           manifests: ./Kubernetes/${{ matrix.service }}.yaml
           images: |
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ matrix.service }}:${{ github.sha }}
+
+  deployRabbitMQ:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Deploy RabbitMQ
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests: ./Kubernetes/rabbitmq.yaml
+          images: |
+            rabbitmq:3-management
