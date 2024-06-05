@@ -69,11 +69,11 @@ jobs:
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: ./Kubernetes/${{ matrix.service }}.yaml
+          manifests: ./kubernetes/${{ env.LOWERCASE_SERVICE }}.yaml
           namespace: ${{ env.NAMESPACE }}
           images: |
-            LOWERCASE_SERVICE=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.LOWERCASE_SERVICE }}:${{ github.sha }}
+
         
 
   deployRabbitMQ:
