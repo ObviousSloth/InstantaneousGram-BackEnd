@@ -71,8 +71,8 @@ jobs:
             context: InstantaneousGram-ImageAndVideoProcessing
             env_file: true
           - name: userprofile
-            dockerfile: InstantaneousGram-UserProfileServices/Dockerfile
-            context: InstantaneousGram-UserProfileServices
+            dockerfile: InstantaneousGram-UserProfile/Dockerfile
+            context: InstantaneousGram-UserProfile
     steps:
       # Checks out the repository this file is in
       - uses: actions/checkout@v4
