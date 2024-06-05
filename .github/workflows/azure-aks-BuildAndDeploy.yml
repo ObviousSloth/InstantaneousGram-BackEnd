@@ -66,10 +66,10 @@ jobs:
           - name: likeandcomment
             dockerfile: InstantaneousGram-LikeAndComment/Dockerfile
             context: InstantaneousGram-LikeAndComment
-          - name: imageprocessing
+          - name: imageandvideoprocessing
             dockerfile: InstantaneousGram-ImageAndVideoProcessing/Dockerfile
             context: InstantaneousGram-ImageAndVideoProcessing
-            env_file: true
+            needs_env: true
           - name: userprofile
             dockerfile: InstantaneousGram-UserProfile/Dockerfile
             context: InstantaneousGram-UserProfile
@@ -90,7 +90,7 @@ jobs:
 
        # Create the .env file for the image processing service
       - name: Set up .env file for image processing
-        if: matrix.service.env_file == 'true'
+        if: matrix.service.needs_env == 'true'
         run: |
           echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
 
