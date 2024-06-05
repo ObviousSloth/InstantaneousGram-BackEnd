@@ -57,15 +57,19 @@ jobs:
           - name: apigateway
             dockerfile: InstantaneousGram-ApiGateway/Dockerfile
             context: InstantaneousGram-ApiGateway
+            needs_env: false
           - name: authentication
             dockerfile: InstantaneousGram-Authentication/Dockerfile
             context: InstantaneousGram-Authentication
+            needs_env: false
           - name: contentmanagement
             dockerfile: InstantaneousGram-ContentManagement/Dockerfile
             context: InstantaneousGram-ContentManagement
+            needs_env: false
           - name: likeandcomment
             dockerfile: InstantaneousGram-LikeAndComment/Dockerfile
             context: InstantaneousGram-LikeAndComment
+            needs_env: false
           - name: imageandvideoprocessing
             dockerfile: InstantaneousGram-ImageAndVideoProcessing/Dockerfile
             context: InstantaneousGram-ImageAndVideoProcessing
@@ -73,6 +77,7 @@ jobs:
           - name: userprofile
             dockerfile: InstantaneousGram-UserProfile/Dockerfile
             context: InstantaneousGram-UserProfile
+            needs_env: false
     outputs:
       service_name: ${{ steps.set-outputs.outputs.service_name }}
       needs_env: ${{ steps.set-outputs.outputs.needs_env }}
