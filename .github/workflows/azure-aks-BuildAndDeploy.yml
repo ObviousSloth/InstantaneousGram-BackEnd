@@ -179,6 +179,7 @@ jobs:
           find . -type f -name "*.yaml" -exec sed -i 's/extensions\/v1beta1/apps\/v1/' {} +
       
 
+          
       # Deploys application based on manifest files from previous step
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
