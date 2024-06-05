@@ -134,8 +134,9 @@ jobs:
 
       # Ensure the .env file exists before running kompose
       - name: Ensure .env file exists for image processing
-        if: ${{ matrix.service.needs_env }} 
+        if: ${{ matrix.service.needs_env }}
         run: |
+          echo "Ensuring .env file exists for image processing"
           echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
 
       # Runs Kompose to create manifest files
