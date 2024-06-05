@@ -88,6 +88,9 @@ jobs:
         run: |
           echo "${{ secrets.APPSETTINGS_JSON }}" > ${{ matrix.service.context }}/appsettings.json
 
+      - name: Debug matrix
+        run: | 
+          echo "Service: ${{ matrix.service.name }}, Needs Env: ${{ matrix.service.needs_env }}"          
        # Create the .env file for the image processing service
       - name: Set up .env file for image processing
         if: ${{ matrix.service.needs_env }} 
@@ -131,12 +134,14 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           admin: 'false'
           use-kubelogin: 'true'
-
+      - name: Debug matrix deploy
+        run: | 
+            echo "Service: ${{ matrix.service.name }}, Needs Env: ${{ matrix.service.needs_env }}"
       # Ensure the .env file exists before running kompose
       - name: Ensure .env file exists for image processing
         run: |
           echo "Ensuring .env file exists for image processing"
-          mkdir -p InstantaneousGram-ImageAndVideoProcessing
+          mkdir -p instantaneousGram-imageAndvideoprocessing
           echo "${{ secrets.CLOUDINARY_URL }}" > InstantaneousGram-ImageAndVideoProcessing/.env
 
       # Runs Kompose to create manifest files
