@@ -62,6 +62,9 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
+      - name: Set lowercase service name
+        run: echo "LOWERCASE_SERVICE=$(echo '${{ matrix.service }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
         with:
@@ -70,7 +73,7 @@ jobs:
           namespace: ${{ env.NAMESPACE }}
           images: |
             LOWERCASE_SERVICE=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ matrix.service }}:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.LOWERCASE_SERVICE }}:${{ github.sha }}
         
 
   deployRabbitMQ:
