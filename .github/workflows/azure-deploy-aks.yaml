@@ -1,0 +1,67 @@
+name: Build and deploy microservices to AKS
+
+on:
+  push:
+    branches: ["main", "Development"]
+  workflow_dispatch:
+
+env:
+  AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
+  RESOURCE_GROUP: "InstantaneousGram"
+  CLUSTER_NAME: "InstantKluster"
+  IMAGE_PULL_SECRET_NAME: "your-image-pull-secret-name"
+
+jobs:
+  buildAndDeploy:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - apigateway
+          - authentication
+          - contentmanagement
+          - imageandvideoprocessing
+          - likeandcomment
+          - userprofile
+          - rabbitmq
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up appsettings and .env
+        run: |
+          echo '${{ secrets.APPSETTINGS_JSON }}' > ./${{ matrix.service }}/appsettings.json
+          echo '${{ secrets.IMAGE_ENV }}' > ./${{ matrix.service }}/.env
+
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and push image to ACR
+        run: |
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ matrix.service }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} -f ./${{ matrix.service }}/Dockerfile ./${{ matrix.service }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Deploy application
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests: ./Kubernetes/${{ matrix.service }}.yaml
+          images: |
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ matrix.service }}:${{ github.sha }}
