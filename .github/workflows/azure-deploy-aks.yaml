@@ -45,7 +45,8 @@ jobs:
 
       - name: Build and push image to ACR
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ matrix.service }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} -f ./${{ matrix.service }}/Dockerfile ./${{ matrix.service }}
+          LOWERCASE_SERVICE=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${LOWERCASE_SERVICE}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} -f ./${{ matrix.service }}/Dockerfile ./${{ matrix.service }}
 
       - name: Set up kubelogin for non-interactive login
         uses: azure/use-kubelogin@v1
