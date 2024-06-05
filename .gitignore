@@ -398,8 +398,15 @@ FodyWeavers.xsd
 *.sln.iml
 
 #Appsettings
-appsettings.json
+*.appsettings.json
 appsettings.Development.json
 appsettings.Production.json
 InstantaneousGram-ImageAndVideoProcessing/.env
+Kubernetes/connection-string-configmap.yaml
+InstantaneousGram-ContentManagement/appsettings.json
+InstantaneousGram-ContentManagement/appsettings.json
+InstantaneousGram-ContentManagement/appsettings.json
+InstantaneousGram-ImageAndVideoProcessing/.env
+InstantaneousGram-ImageAndVideoProcessing/appsettings.json
+InstantaneousGram-UserProfile/appsettings.json
 Kubernetes/connection-string-configmap.yaml
