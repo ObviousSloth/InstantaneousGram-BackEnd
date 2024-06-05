@@ -64,7 +64,7 @@ jobs:
       # Builds and pushes an image up to your Azure Container Registry
       - name: Build and push image to ACR
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file Instantaneousgram-Apigateway/Dockerfile Instantaneousgram-Apigateway/
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file InstantaneousGram-ApiGateway/Dockerfile InstantaneousGram-ApiGateway/
 
   deploy:
     permissions:
