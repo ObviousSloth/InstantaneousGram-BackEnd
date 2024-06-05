@@ -40,6 +40,7 @@ on:
 
 env:
   AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
+  CONTAINER_NAME: "instantaneousgram"
   RESOURCE_GROUP: "InstantaneousGram"
   CLUSTER_NAME: "InstantKluster"
   DOCKER_COMPOSE_FILE_PATH: "./docker-compose.yml"
@@ -80,27 +81,33 @@ jobs:
     outputs:
       service_name: ${{ steps.set-outputs.outputs.service_name }}
       needs_env: ${{ steps.set-outputs.outputs.needs_env }}
+       
     steps:
+      # Checks out the repository this file is in
       - uses: actions/checkout@v4
 
+      # Logs in with your Azure credentials
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Create the shared appsettings files
       - name: Set up shared appsettings files
         run: |
           echo "${{ secrets.APPSETTINGS_JSON }}" > ${{ matrix.service.context }}/appsettings.json
 
       - name: Debug matrix
-        run: |
-          echo "Service: ${{ matrix.service.name }}, Needs Env: ${{ matrix.service.needs_env }}"
-
+        run: | 
+          echo "Service: ${{ matrix.service.name }}, Needs Env: ${{ matrix.service.needs_env }}"          
+       # Create the .env file for the image processing service
       - name: Set up .env file for image processing
-        if: ${{ matrix.service.needs_env }}
+        if: ${{ matrix.service.needs_env }} 
         run: |
           echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
 
+
+      # Builds and pushes an image up to your Azure Container Registry
       - name: Build and push image to ACR
         run: |
           az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-${{ matrix.service.name }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file ${{ matrix.service.dockerfile }} ${{ matrix.service.context }}
@@ -108,29 +115,33 @@ jobs:
       - name: Set outputs for deploy job
         id: set-outputs
         run: |
-          echo "service_name=${{ matrix.service.name }}" >> $GITHUB_OUTPUT
-          echo "needs_env=${{ matrix.service.needs_env }}" >> $GITHUB_OUTPUT
-
+            echo "service_name=${{ matrix.service.name }}" >> $GITHUB_OUTPUT
+            echo "needs_env=${{ matrix.service.needs_env }}" >> $GITHUB_OUTPUT
+                  
   deploy:
-    needs: buildImage
     permissions:
       actions: read
       contents: read
       id-token: write
     runs-on: ubuntu-latest
+    needs: [buildImage]
     steps:
+      # Checks out the repository this file is in
       - uses: actions/checkout@v4
 
+      # Logs in with your Azure credentials
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Use kubelogin to configure your kubeconfig for Azure auth
       - name: Set up kubelogin for non-interactive login
         uses: azure/use-kubelogin@v1
         with:
           kubelogin-version: 'v0.0.25'
 
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
       - name: Get K8s context
         uses: azure/aks-set-context@v3
         with:
@@ -143,21 +154,24 @@ jobs:
         run: |
           echo "Service: ${{ needs.buildImage.outputs.service_name }}"
           echo "Needs Env: ${{ needs.buildImage.outputs.needs_env }}"
-
+        
+      # Ensure the .env file exists before running kompose
       - name: Ensure .env file exists for image processing
-        if: ${{ needs.buildImage.outputs.needs_env == 'true' }}
+        if: ${{ needs.buildImage.outputs.needs_env }}
         run: |
           echo "Ensuring .env file exists for image processing"
           mkdir -p InstantaneousGram-ImageAndVideoProcessing
           echo "${{ secrets.CLOUDINARY_URL }}" > InstantaneousGram-ImageAndVideoProcessing/.env
 
+
+      # Runs Kompose to create manifest files
       - name: Bake deployment
-        id: bake
         uses: azure/k8s-bake@v2
         with:
           renderEngine: "kompose"
           dockerComposeFile: ${{ env.DOCKER_COMPOSE_FILE_PATH }}
           kompose-version: "latest"
+        id: bake
 
       - name: Adjust manifest names
         run: |
@@ -171,6 +185,7 @@ jobs:
           echo "Printing adjusted manifest files:"
           find . -type f -name "*.yaml" -exec cat {} +
 
+      # Deploys application based on manifest files from previous step
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
         with:
@@ -181,6 +196,5 @@ jobs:
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-authentication:${{ github.sha }}
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-contentmanagement:${{ github.sha }}
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-likeandcomment:${{ github.sha }}
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-imageandvideoprocessing:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-imageprocessing:${{ github.sha }}
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-userprofile:${{ github.sha }}
-
