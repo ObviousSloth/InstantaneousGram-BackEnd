@@ -160,7 +160,7 @@ jobs:
         if: ${{ needs.buildImage.outputs.needs_env }}
         run: |
           echo "Ensuring .env file exists for image processing"
-          
+          mkdir -p InstantaneousGram-ImageAndVideoProcessing
           echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
 
 
@@ -172,6 +172,10 @@ jobs:
           dockerComposeFile: ${{ env.DOCKER_COMPOSE_FILE_PATH }}
           kompose-version: "latest"
         id: bake
+
+      - name: Adjust manifest names
+        run: |
+          sed -i 's/instantaneousgram-imageandvideoprocessing-InstantaneousGram-ImageAndVideoProcessing--env/imageandvideoprocessing-env/' ${{ steps.bake.outputs.manifestsBundle }}
 
       # Deploys application based on manifest files from previous step
       - name: Deploy application
