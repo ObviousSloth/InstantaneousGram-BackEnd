@@ -39,7 +39,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_CONTAINER_REGISTRY: "InstantaneousGramContainerReg"
+  AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
   CONTAINER_NAME: "instantaneousgram-apigatewayservices"
   RESOURCE_GROUP: "InstantaneousGram"
   CLUSTER_NAME: "InstantKluster"
