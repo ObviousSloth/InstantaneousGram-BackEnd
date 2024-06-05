@@ -181,6 +181,11 @@ jobs:
       - name: Print adjusted manifests
         run: |
             find . -type f -name "*.yaml" -exec cat {} +
+            
+      - name: Print specific sections of adjusted manifests
+        run: |
+          echo "Printing ConfigMap names in manifests:"
+          grep -E 'name: imgproc-env|name: imageandvideoprocessing' -r .    
 
       # Deploys application based on manifest files from previous step
       - name: Deploy application
