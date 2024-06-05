@@ -131,15 +131,12 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           admin: 'false'
           use-kubelogin: 'true'
-          
+
       # Ensure the .env file exists before running kompose
       - name: Ensure .env file exists for image processing
         if: ${{ matrix.service.needs_env }} 
         run: |
-          if [ ! -f ${{ matrix.service.context }}/.env ]; then
-            echo "Creating .env file for image processing"
-            echo -e "${{ secrets.ENV_IMAGEPROCESSING }}" > ${{ matrix.service.context }}/.env
-          fi
+          echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
 
       # Runs Kompose to create manifest files
       - name: Bake deployment
