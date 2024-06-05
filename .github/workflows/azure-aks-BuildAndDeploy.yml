@@ -175,17 +175,22 @@ jobs:
 
       - name: Adjust manifest names
         run: |
+          echo "Adjusting manifest names"
           find . -type f -name "*.yaml" -exec sed -i 's/instantaneousgram-imageandvideoprocessing-InstantaneousGram-ImageAndVideoProcessing--env/imgproc-env/' {} +
           find . -type f -name "*.yaml" -exec sed -i 's/extensions\/v1beta1/apps\/v1/' {} +
-      
+          find . -type f -name "*.yaml" -exec sed -i 's/instantaneousgram-imageandvideoprocessing-InstantaneousGram-ImageAndVideoProcessing/imageandvideoprocessing/' {} +
+          echo "Adjusted manifest files:"
+          find . -type f -name "*.yaml" -exec grep -E 'imgproc-env|imageandvideoprocessing' {} +
+
       - name: Print adjusted manifests
         run: |
-            find . -type f -name "*.yaml" -exec cat {} +
-            
+          echo "Printing adjusted manifest files:"
+          find . -type f -name "*.yaml" -exec cat {} +
+
       - name: Print specific sections of adjusted manifests
         run: |
           echo "Printing ConfigMap names in manifests:"
-          grep -E 'name: imgproc-env|name: imageandvideoprocessing' -r .    
+          grep -E 'name: imgproc-env|name: imageandvideoprocessing' -r .
 
       # Deploys application based on manifest files from previous step
       - name: Deploy application
