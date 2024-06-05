@@ -178,8 +178,10 @@ jobs:
           find . -type f -name "*.yaml" -exec sed -i 's/instantaneousgram-imageandvideoprocessing-InstantaneousGram-ImageAndVideoProcessing--env/imageandvideoprocessing-env/' {} +
           find . -type f -name "*.yaml" -exec sed -i 's/extensions\/v1beta1/apps\/v1/' {} +
       
+      - name: Print adjusted manifests
+        run: |
+            find . -type f -name "*.yaml" -exec cat {} +
 
-          
       # Deploys application based on manifest files from previous step
       - name: Deploy application
         uses: Azure/k8s-deploy@v4
