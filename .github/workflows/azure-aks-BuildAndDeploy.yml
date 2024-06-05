@@ -103,7 +103,7 @@ jobs:
   deploy:
     permissions:
       actions: read
-      contents: write
+      contents: read
       id-token: write
     runs-on: ubuntu-latest
     needs: [buildImage]
@@ -134,9 +134,11 @@ jobs:
 
       # Ensure the .env file exists before running kompose
       - name: Ensure .env file exists for image processing
+        if: ${{ matrix.service.needs_env }}
         run: |
           echo "Ensuring .env file exists for image processing"
-          echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
+          mkdir -p InstantaneousGram-ImageAndVideoProcessing
+          echo "${{ secrets.CLOUDINARY_URL }}" > InstantaneousGram-ImageAndVideoProcessing/.env
 
       # Runs Kompose to create manifest files
       - name: Bake deployment
