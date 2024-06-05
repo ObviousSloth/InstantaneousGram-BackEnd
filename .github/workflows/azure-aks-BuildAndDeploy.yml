@@ -90,7 +90,7 @@ jobs:
 
        # Create the .env file for the image processing service
       - name: Set up .env file for image processing
-        if: matrix.service.needs_env == 'true'
+        if: ${{ matrix.service.needs_env }} 
         run: |
           echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
 
