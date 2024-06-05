@@ -160,8 +160,8 @@ jobs:
         if: ${{ needs.buildImage.outputs.needs_env }}
         run: |
           echo "Ensuring .env file exists for image processing"
-          mkdir -p InstantaneousGram-ImageAndVideoProcessing
-          echo "${{ secrets.CLOUDINARY_URL }}" > InstantaneousGram-ImageAndVideoProcessing/.env
+          
+          echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
 
 
       # Runs Kompose to create manifest files
