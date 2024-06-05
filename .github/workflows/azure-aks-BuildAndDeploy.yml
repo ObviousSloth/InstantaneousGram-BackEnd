@@ -40,7 +40,7 @@ on:
 
 env:
   AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
-  CONTAINER_NAME: "instantaneousgram-apigatewayservices"
+  CONTAINER_NAME: "instantaneousgram"
   RESOURCE_GROUP: "InstantaneousGram"
   CLUSTER_NAME: "InstantKluster"
   DOCKER_COMPOSE_FILE_PATH: "./docker-compose.yml"
@@ -51,6 +51,28 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - name: apigateway
+            dockerfile: InstantaneousGram-ApiGateway/Dockerfile
+            context: InstantaneousGram-ApiGateway
+          - name: authentication
+            dockerfile: InstantaneousGram-Authentication/Dockerfile
+            context: InstantaneousGram-Authentication
+          - name: contentmanagement
+            dockerfile: InstantaneousGram-ContentManagement/Dockerfile
+            context: InstantaneousGram-ContentManagement
+          - name: likeandcomment
+            dockerfile: InstantaneousGram-LikeAndComment/Dockerfile
+            context: InstantaneousGram-LikeAndComment
+          - name: imageprocessing
+            dockerfile: InstantaneousGram-ImageAndVideoProcessing/Dockerfile
+            context: InstantaneousGram-ImageAndVideoProcessing
+            env_file: true
+          - name: userprofile
+            dockerfile: InstantaneousGram-UserProfileServices/Dockerfile
+            context: InstantaneousGram-UserProfileServices
     steps:
       # Checks out the repository this file is in
       - uses: actions/checkout@v4
@@ -61,10 +83,22 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Create the shared appsettings files
+      - name: Set up shared appsettings files
+        run: |
+          echo "${{ secrets.APPSETTINGS_JSON }}" > ${{ matrix.service.context }}/appsettings.json
+
+       # Create the .env file for the image processing service
+      - name: Set up .env file for image processing
+        if: matrix.service.env_file == 'true'
+        run: |
+          echo "${{ secrets.CLOUDINARY_URL }}" > ${{ matrix.service.context }}/.env
+
+
       # Builds and pushes an image up to your Azure Container Registry
       - name: Build and push image to ACR
         run: |
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file InstantaneousGram-ApiGateway/Dockerfile InstantaneousGram-ApiGateway/
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-${{ matrix.service.name }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file ${{ matrix.service.dockerfile }} ${{ matrix.service.context }}
 
   deploy:
     permissions:
@@ -114,4 +148,9 @@ jobs:
           action: deploy
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
           images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-apigateway:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-authentication:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-contentmanagement:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-likeandcomment:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-imageprocessing:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-userprofile:${{ github.sha }}
