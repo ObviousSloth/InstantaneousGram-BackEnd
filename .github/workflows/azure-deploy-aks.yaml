@@ -9,6 +9,7 @@ env:
   AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
   RESOURCE_GROUP: "InstantaneousGram"
   CLUSTER_NAME: "InstantKluster"
+  NAMESPACE: "instantaneousgram"
   IMAGE_PULL_SECRET_NAME: "your-image-pull-secret-name"
 
 jobs:
@@ -66,8 +67,11 @@ jobs:
         with:
           action: deploy
           manifests: ./Kubernetes/${{ matrix.service }}.yaml
+          namespace: ${{ env.NAMESPACE }}
           images: |
+            LOWERCASE_SERVICE=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
             ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ matrix.service }}:${{ github.sha }}
+        
 
   deployRabbitMQ:
     runs-on: ubuntu-latest
@@ -98,5 +102,6 @@ jobs:
         with:
           action: deploy
           manifests: ./Kubernetes/rabbitmq.yaml
+          namespace: ${{ env.NAMESPACE }}
           images: |
             rabbitmq:3-management
