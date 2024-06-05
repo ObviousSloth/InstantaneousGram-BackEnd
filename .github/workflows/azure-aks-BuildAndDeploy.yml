@@ -73,6 +73,10 @@ jobs:
           - name: userprofile
             dockerfile: InstantaneousGram-UserProfile/Dockerfile
             context: InstantaneousGram-UserProfile
+    outputs:
+      service_name: ${{ steps.set-outputs.outputs.service_name }}
+      needs_env: ${{ steps.set-outputs.outputs.needs_env }}
+       
     steps:
       # Checks out the repository this file is in
       - uses: actions/checkout@v4
@@ -104,6 +108,7 @@ jobs:
           az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/instantaneousgram-${{ matrix.service.name }}:latest --registry ${{ env.AZURE_CONTAINER_REGISTRY }} --file ${{ matrix.service.dockerfile }} ${{ matrix.service.context }}
 
       - name: Set outputs for deploy job
+        id: set-outputs
         run: |
             echo "service_name=${{ matrix.service.name }}" >> $GITHUB_OUTPUT
             echo "needs_env=${{ matrix.service.needs_env }}" >> $GITHUB_OUTPUT
@@ -142,11 +147,12 @@ jobs:
 
       - name: Debug outputs
         run: |
-          echo "Service: ${{ needs.buildImage.outputs.service_name }}, Needs Env: ${{ needs.buildImage.outputs.needs_env }}"
+          echo "Service: ${{ needs.buildImage.outputs.service_name }}"
+          echo "Needs Env: ${{ needs.buildImage.outputs.needs_env }}"
         
       # Ensure the .env file exists before running kompose
       - name: Ensure .env file exists for image processing
-        if: ${{ needs.buildImage.outputs.needs_env}}
+        if: ${{ needs.buildImage.outputs.needs_env == 'true' }}
         run: |
           echo "Ensuring .env file exists for image processing"
           mkdir -p InstantaneousGram-ImageAndVideoProcessing
