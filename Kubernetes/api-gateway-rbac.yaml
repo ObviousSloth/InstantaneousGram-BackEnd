@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ocelot-gateway-sa
+  namespace: instantaneousgram
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: instantaneousgram
+  name: ocelot-gateway-role
+rules:
+- apiGroups: [""]
+  resources: ["services", "endpoints", "pods"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ocelot-gateway-rolebinding
+  namespace: instantaneousgram
+subjects:
+- kind: ServiceAccount
+  name: ocelot-gateway-sa
+  namespace: instantaneousgram
+roleRef:
+  kind: Role
+  name: ocelot-gateway-role
+  apiGroup: rbac.authorization.k8s.io

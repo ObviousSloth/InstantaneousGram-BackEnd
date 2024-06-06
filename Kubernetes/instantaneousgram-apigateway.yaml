@@ -4,7 +4,7 @@ metadata:
   name: instantaneousgram-apigateway
   namespace: instantaneousgram
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: instantaneousgram-apigateway
@@ -13,9 +13,11 @@ spec:
       labels:
         app: instantaneousgram-apigateway
     spec:
+      serviceAccountName: ocelot-gateway-sa
       containers:
       - name: instantaneousgram-apigateway
         image: slothh/instantaneousgram-apigatewayservices:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:
@@ -79,4 +81,3 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-

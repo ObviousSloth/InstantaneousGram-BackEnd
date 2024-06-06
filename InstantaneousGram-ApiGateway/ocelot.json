@@ -1,5 +1,5 @@
 {
-  "Routes": [
+  "ReRoutes": [
     {
       "ServiceName": "instantaneousgram-authentication-clusterip",
       "DownstreamPathTemplate": "/api/authentication",
@@ -55,6 +55,13 @@
       "DownstreamScheme": "http",
       "UpstreamPathTemplate": "/userprofile/test/{id}",
       "UpstreamHttpMethod": [ "PUT", "DELETE" ]
+    },
+    {
+      "ServiceName": "instantaneousgram-likeandcomment-clusterip",
+      "DownstreamPathTemplate": "/api/likeandcomment",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/likeandcomment",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],
   "GlobalConfiguration": {
