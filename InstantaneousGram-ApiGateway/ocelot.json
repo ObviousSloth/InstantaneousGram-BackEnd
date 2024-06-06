@@ -1,70 +1,66 @@
 {
   "Routes": [
     {
+      "ServiceName": "instantaneousgram-authentication-clusterip",
       "DownstreamPathTemplate": "/api/authentication",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "instantaneousgram-authentication-clusterip",
-          "Port": 80
-        }
-      ],
       "UpstreamPathTemplate": "/authentication",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
+      "ServiceName": "instantaneousgram-contentmanagement-clusterip",
       "DownstreamPathTemplate": "/api/contentmanagement",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "instantaneousgram-contentmanagement-clusterip",
-          "Port": 80
-        }
-      ],
       "UpstreamPathTemplate": "/contentmanagement",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
+      "ServiceName": "instantaneousgram-imageandvideoprocessing-clusterip",
       "DownstreamPathTemplate": "/api/imageandvideoprocessing",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "instantaneousgram-imageandvideoprocessing-clusterip",
-          "Port": 80
-        }
-      ],
       "UpstreamPathTemplate": "/imageandvideoprocessing",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
+      "ServiceName": "instantaneousgram-userprofile-clusterip",
       "DownstreamPathTemplate": "/api/userprofile",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "instantaneousgram-userprofile-clusterip",
-          "Port": 80
-        }
-      ],
       "UpstreamPathTemplate": "/userprofile",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "DownstreamPathTemplate": "/api/userprofile/test",
+      "ServiceName": "instantaneousgram-userprofile-clusterip",
+      "DownstreamPathTemplate": "/api/Test",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "instantaneousgram-userprofile-clusterip",
-          "Port": 80
-        }
-      ],
       "UpstreamPathTemplate": "/userprofile/test",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "ServiceName": "instantaneousgram-userprofile-clusterip",
+      "DownstreamPathTemplate": "/api/Test/{id}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/userprofile/test/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "ServiceName": "instantaneousgram-userprofile-clusterip",
+      "DownstreamPathTemplate": "/api/Test",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/userprofile/test",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "ServiceName": "instantaneousgram-userprofile-clusterip",
+      "DownstreamPathTemplate": "/api/Test/{id}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/userprofile/test/{id}",
+      "UpstreamHttpMethod": [ "PUT", "DELETE" ]
     }
   ],
   "GlobalConfiguration": {
     "ServiceDiscoveryProvider": {
       "Namespace": "instantaneousgram",
-      "Type": "KubernetesServiceDiscoveryProvider"
+      "Type": "Kube"
     }
   }
 }
