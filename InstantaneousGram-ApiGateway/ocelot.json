@@ -1,5 +1,5 @@
 {
-  "ReRoutes": [
+  "Routes": [
     {
       "ServiceName": "instantaneousgram-authentication-clusterip",
       "DownstreamPathTemplate": "/api/authentication",
