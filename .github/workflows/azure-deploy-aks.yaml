@@ -1,6 +1,10 @@
 name: Build and deploy microservices to AKS
 
 on:
+  workflow_run:
+    workflows: [Run Tests]
+    types:
+      - completed
   push:
     branches: ["main", "Development"]
   workflow_dispatch:
