@@ -1,0 +1,114 @@
+name: Build and deploy microservices to AKS
+
+on:
+  workflow_run:
+    workflows: ["CI/CD Workflow"]
+    types:
+      - completed
+    branches: [ main, Development]
+
+env:
+  AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
+  RESOURCE_GROUP: "InstantaneousGram"
+  CLUSTER_NAME: "InstantKluster"
+  NAMESPACE: "instantaneousgram"
+  IMAGE_PULL_SECRET_NAME: "your-image-pull-secret-name"
+
+jobs:
+  buildAndDeploy:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    strategy:
+      matrix:
+        service:
+          - InstantaneousGram-ApiGateway
+          - InstantaneousGram-Authentication
+          - InstantaneousGram-ContentManagement
+          - InstantaneousGram-ImageAndVideoProcessing
+          - InstantaneousGram-LikeAndComment
+          - InstantaneousGram-UserProfile
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up appsettings and .env
+        run: |
+          echo '${{ secrets.APPSETTINGS_JSON }}' > ./${{ matrix.service }}/appsettings.json
+          if [ "${{ matrix.service }}" == "imageandvideoprocessing" ]; then
+            echo '${{ secrets.CLOUDINARY_URL }}' > ./${{ matrix.service }}/.env
+          fi
+
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and push image to ACR
+        run: |
+          LOWERCASE_SERVICE=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
+          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${LOWERCASE_SERVICE}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} -f ./${{ matrix.service }}/Dockerfile ./${{ matrix.service }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Set lowercase service name
+        run: echo "LOWERCASE_SERVICE=$(echo '${{ matrix.service }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Deploy application
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests: ./Kubernetes/${{ env.LOWERCASE_SERVICE }}.yaml
+          namespace: ${{ env.NAMESPACE }}
+          images: |
+            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.LOWERCASE_SERVICE }}:${{ github.sha }}
+
+        
+
+  deployRabbitMQ:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Deploy RabbitMQ
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests: ./Kubernetes/rabbitmq.yaml
+          namespace: ${{ env.NAMESPACE }}
+          images: |
+            rabbitmq:3-management
