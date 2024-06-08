@@ -2,14 +2,13 @@ name: CI/CD Workflow
 
 on:
   push:
-    branches: [ main, Development]
+    branches: [main, Development]
   pull_request:
-    branches: [ main, Development]
+    branches: [main, Development]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         microservice: 
@@ -19,7 +18,6 @@ jobs:
           - InstantaneousGram-ContentManagement
           - InstantaneousGram-ImageAndVideoProcessing
           - InstantaneousGram-LikeAndComment
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +43,30 @@ jobs:
 
       - name: Test
         run: dotnet test ${{ matrix.microservice }} --no-restore --verbosity normal
+
+  sonarcloud:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - backend/InstantaneousGram-Authentication
+          - backend/InstantaneousGram-UserProfile
+          - backend/InstantaneousGram-ApiGateway
+          - backend/InstantaneousGram-ContentManagement
+          - backend/InstantaneousGram-ImageAndVideoProcessing
+          - backend/InstantaneousGram-LikeAndComment
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ${{ matrix.project }}
 
   buildDockerImage:
     needs: build-and-test
