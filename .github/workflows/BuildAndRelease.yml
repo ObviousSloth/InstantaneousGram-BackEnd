@@ -66,14 +66,20 @@ jobs:
         run: ls -R
 
       - name: Verify project directory
-        run: ls -R ${{ matrix.project }}
+        run: ls -R InstantaneousGram-BackEnd/${{ matrix.microservice }}
+
+      - name: Verify sonar-project.properties
+        run: cat InstantaneousGram-BackEnd/${{ matrix.microservice }}/sonar-project.properties
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: ${{ matrix.project }}
+          projectBaseDir: InstantaneousGram-BackEnd/${{ matrix.microservice }}
+          args: >
+            -Dsonar.projectKey=your-project-key-${{ matrix.microservice }}
+            -Dsonar.organization=your-organization-key
 
   buildDockerImage:
     needs: [sonarcloud]
