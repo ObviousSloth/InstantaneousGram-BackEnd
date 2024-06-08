@@ -69,7 +69,7 @@ jobs:
           projectBaseDir: ${{ matrix.project }}
 
   buildDockerImage:
-    needs: build-and-test
+    needs: [sonarcloud]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
