@@ -5,6 +5,7 @@ on:
     workflows: ["CI/CD Workflow"]
     types:
       - completed
+    branches: [ main, Development]
 
 env:
   AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
