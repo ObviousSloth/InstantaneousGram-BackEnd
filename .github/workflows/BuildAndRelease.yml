@@ -59,7 +59,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=InstantaneousGram-BackEnd
+            -Dsonar.projectKey=ObviousSloth_InstantaneousGram-BackEnd
             -Dsonar.organization=obvioussloth
             -Dsonar.projectBaseDir=.
 
