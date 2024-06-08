@@ -47,39 +47,21 @@ jobs:
   sonarcloud:
     needs: build-and-test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        microservice: 
-          - InstantaneousGram-Authentication
-          - InstantaneousGram-UserProfile
-          - InstantaneousGram-ApiGateway
-          - InstantaneousGram-ContentManagement
-          - InstantaneousGram-ImageAndVideoProcessing
-          - InstantaneousGram-LikeAndComment
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: List directory contents
-        run: ls -R
-
-      - name: Verify project directory
-        run: ls -R InstantaneousGram-BackEnd/${{ matrix.microservice }}
-
-      - name: Verify sonar-project.properties
-        run: cat InstantaneousGram-BackEnd/${{ matrix.microservice }}/sonar-project.properties
-
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.1.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: InstantaneousGram-BackEnd/${{ matrix.microservice }}
           args: >
-            -Dsonar.projectKey=your-project-key-${{ matrix.microservice }}
-            -Dsonar.organization=your-organization-key
+            -Dsonar.projectKey=InstantaneousGram-BackEnd
+            -Dsonar.organization=obvioussloth
+            -Dsonar.projectBaseDir=.
 
   buildDockerImage:
     needs: [sonarcloud]
