@@ -57,9 +57,16 @@ jobs:
           - backend/InstantaneousGram-ImageAndVideoProcessing
           - backend/InstantaneousGram-LikeAndComment
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: List directory contents
+        run: ls -R
+
+      - name: Verify project directory
+        run: ls -R ${{ matrix.project }}
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2.1.0
