@@ -49,13 +49,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project:
-          - backend/InstantaneousGram-Authentication
-          - backend/InstantaneousGram-UserProfile
-          - backend/InstantaneousGram-ApiGateway
-          - backend/InstantaneousGram-ContentManagement
-          - backend/InstantaneousGram-ImageAndVideoProcessing
-          - backend/InstantaneousGram-LikeAndComment
+        microservice: 
+          - InstantaneousGram-Authentication
+          - InstantaneousGram-UserProfile
+          - InstantaneousGram-ApiGateway
+          - InstantaneousGram-ContentManagement
+          - InstantaneousGram-ImageAndVideoProcessing
+          - InstantaneousGram-LikeAndComment
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
