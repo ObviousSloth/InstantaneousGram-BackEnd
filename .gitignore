@@ -403,3 +403,4 @@ appsettings.Development.json
 appsettings.Production.json
 InstantaneousGram-ImageAndVideoProcessing/.env
 Kubernetes/connection-string-configmap.yaml
+InstantaneousGram-ImageAndVideoProcessing/.env
