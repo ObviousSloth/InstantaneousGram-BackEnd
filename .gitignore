@@ -410,3 +410,4 @@ InstantaneousGram-ImageAndVideoProcessing/.env
 InstantaneousGram-ImageAndVideoProcessing/appsettings.json
 InstantaneousGram-UserProfile/appsettings.json
 Kubernetes/connection-string-configmap.yaml
+InstantaneousGram-ApiGateway/appsettings.json
