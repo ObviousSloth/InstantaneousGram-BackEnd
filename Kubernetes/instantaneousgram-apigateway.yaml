@@ -59,6 +59,10 @@ spec:
             secretKeyRef:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
+        volumeMounts:
+        - name: ocelot-config
+          mountPath: /etc/ocelot
+          subPath: ocelot.json
         resources:
           requests:
             cpu: "100m"
@@ -66,6 +70,10 @@ spec:
           limits:
             cpu: "500m"
             memory: "256Mi"
+      volumes:
+      - name: ocelot-config
+        configMap:
+          name: ocelot-config
 ---
 apiVersion: v1
 kind: Service

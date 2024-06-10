@@ -1,27 +1,6 @@
 {
   "Routes": [
     {
-      "ServiceName": "instantaneousgram-authentication-clusterip",
-      "DownstreamPathTemplate": "/api/authentication",
-      "DownstreamScheme": "http",
-      "UpstreamPathTemplate": "/authentication",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-    },
-    {
-      "ServiceName": "instantaneousgram-contentmanagement-clusterip",
-      "DownstreamPathTemplate": "/api/contentmanagement",
-      "DownstreamScheme": "http",
-      "UpstreamPathTemplate": "/contentmanagement",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-    },
-    {
-      "ServiceName": "instantaneousgram-imageandvideoprocessing-clusterip",
-      "DownstreamPathTemplate": "/api/imageandvideoprocessing",
-      "DownstreamScheme": "http",
-      "UpstreamPathTemplate": "/imageandvideoprocessing",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-    },
-    {
       "ServiceName": "instantaneousgram-userprofile-clusterip",
       "DownstreamPathTemplate": "/api/userprofile",
       "DownstreamScheme": "http",

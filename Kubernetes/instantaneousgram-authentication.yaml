@@ -69,13 +69,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: instantaneousgram-authentication-clusterip
+  name: instantaneousgram-apigateway-service
   namespace: instantaneousgram
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
-    app: instantaneousgram-authentication
+    app: instantaneousgram-apigateway
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30001

@@ -1,0 +1,80 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: instantaneousgram-ingress
+  namespace: instantaneousgram
+  annotations:
+    kubernetes.azure.com/tls-cert-keyvault-uri: https://instantaneousgram-keysn.vault.azure.net/certificates/Instantaneousgram-cert
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/auth-url: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/authorize"
+    nginx.ingress.kubernetes.io/auth-signin: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/login?rd=$scheme://$host$request_uri"
+    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization, Set-Cookie"
+    nginx.ingress.kubernetes.io/auth-request-redirect: "/_oauth2/callback"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: instantaneousgram.ddns.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-apigateway-service
+            port:
+              number: 80
+      - path: /userprofile
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-userprofile-clusterip
+            port:
+              number: 80
+      - path: /userprofile/test
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-userprofile-clusterip
+            port:
+              number: 80
+      - path: /userprofile/test/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: instantaneousgram-userprofile-clusterip
+            port:
+              number: 80
+      - path: /likeandcomment
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-likeandcommentclusterip
+            port:
+              number: 80
+      - path: /authorization
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-authentication-clusterip
+            port:
+              number: 80
+      - path: /imageandvideoprocessing
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-imageandvideoprocessing-clusterip
+            port:
+              number: 80
+      - path: /contentmanagement
+        pathType: Prefix
+        backend:
+          service:
+            name: instantaneousgram-contentmanagement-clusterip
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - instantaneousgram.ddns.net
+    secretName: keyvault-instantaneousgram-ingress
