@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: instantaneousgram-ingress
+  namespace: instantaneousgram
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: instantaneousgram.ddns.net
+      http:
+        paths:
+          - path: /userprofile(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-userprofile-clusterip
+                port:
+                  number: 80
+          - path: /api/test(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-userprofile-clusterip
+                port:
+                  number: 80
+          - path: /api/userprofiles(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-userprofile-clusterip
+                port:
+                  number: 80
+          - path: /api/users(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-userprofile-clusterip
+                port:
+                  number: 80
+          - path: /api/publishrabbitmqtest(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-userprofile-clusterip
+                port:
+                  number: 80
