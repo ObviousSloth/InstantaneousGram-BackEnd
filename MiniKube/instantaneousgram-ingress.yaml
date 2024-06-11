@@ -46,3 +46,10 @@ spec:
                 name: instantaneousgram-userprofile-clusterip
                 port:
                   number: 80
+          - path: /authentication(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-authentication-clusterip
+                port:
+                  number: 80
