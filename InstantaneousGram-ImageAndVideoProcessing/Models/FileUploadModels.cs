@@ -13,10 +13,15 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Models
     public class ImageUploadModel
     {
         public IFormFile Image { get; set; }
+        public string UserId { get; set; }
     }
 
-    public class VideoUploadModel
+    namespace InstantaneousGram_ImageAndVideoProcessing.Models
     {
-        public IFormFile Video { get; set; }
+        public class VideoUploadModel
+        {
+            public IFormFile Video { get; set; }
+            public string UserId { get; set; }
+        }
     }
 }

@@ -3,6 +3,8 @@ using CloudinaryDotNet;
 using InstantaneousGram_ImageAndVideoProcessing.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using InstantaneousGram_ImageAndVideoProcessing.Models.InstantaneousGram_ImageAndVideoProcessing.Models;
+using InstantaneousGram_ImageAndVideoProcessing.Repositories;
 
 namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
 {
@@ -11,10 +13,12 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
     public class UploadController : ControllerBase
     {
         private readonly Cloudinary _cloudinary;
+        private readonly ImageAndVideoRepository _repository;
 
-        public UploadController(Cloudinary cloudinary)
+        public UploadController(Cloudinary cloudinary, ImageAndVideoRepository repository)
         {
             _cloudinary = cloudinary;
+            _repository = repository;
         }
 
         [HttpPost("image")]
@@ -32,7 +36,18 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
 
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-                return Ok(uploadResult);
+                var metadata = new ImageOrVideoMetadata
+                {
+                    Id = uploadResult.PublicId,
+                    UserId = model.UserId,
+                    Url = uploadResult.SecureUrl.ToString(),
+                    Type = "image",
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await _repository.AddMetadataAsync(metadata);
+
+                return Ok(new { metadata.Id, metadata.Url });
             }
             catch (Exception ex)
             {
@@ -55,7 +70,18 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
 
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-                return Ok(uploadResult);
+                var metadata = new ImageOrVideoMetadata
+                {
+                    Id = uploadResult.PublicId,
+                    UserId = model.UserId,
+                    Url = uploadResult.SecureUrl.ToString(),
+                    Type = "video",
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await _repository.AddMetadataAsync(metadata);
+
+                return Ok(new { metadata.Id, metadata.Url });
             }
             catch (Exception ex)
             {
