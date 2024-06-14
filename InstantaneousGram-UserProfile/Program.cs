@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using System;
 using InstantaneousGram_UserProfile.Settings;
 using InstantaneousGram_UserProfile.Managers;
+using InstantaneousGram_UserProfile.Repositories;
+using InstantaneousGram_UserProfile.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,28 +26,21 @@ builder.Services.AddCors(options =>
 });
 
 //Add dbContext
-//builder.Services.AddDbContext<InstantaneousGram_UserProfileContext>(options =>
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("InstantaneousGram_UserProfileContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserProfileContext' not found.")));
-builder.Services.AddDbContext<InstantaneousGram_UsersContextSQLite>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("InstantaneousGram_UserContext") ?? throw new InvalidOperationException("Connection string 'InstantaneousGram_UserContext' not found.")));
-Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
-Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
-Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
-Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
-Console.WriteLine("DATABASE: " + builder.Configuration.GetConnectionString("InstantaneousGram_UserContext"));
+// Configure Entity Framework and SQL Server
+builder.Services.AddDbContext<InstantaneousGramDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 string hostName = builder.Configuration.GetValue<string>("RabbitMQ:HostName");
 int port = int.Parse(builder.Configuration.GetValue<string>("RabbitMQ:Port"));
 string userName = builder.Configuration.GetValue<string>("RabbitMQ:UserName");
 string password = builder.Configuration.GetValue<string>("RabbitMQ:Password");
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
 var rabbitMQSettings = builder.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 builder.Services.AddSingleton(rabbitMQSettings);
 builder.Services.AddScoped<RabbitMQManager>();
+
+// Register services and repositories
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -55,10 +50,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Apply migrations for SQLite DbContext
-using var scope = app.Services.CreateScope();
-var dbContext = scope.ServiceProvider.GetRequiredService<InstantaneousGram_UsersContextSQLite>();
-dbContext.Database.Migrate();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

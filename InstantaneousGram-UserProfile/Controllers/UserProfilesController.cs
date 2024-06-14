@@ -7,118 +7,67 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InstantaneousGram_UserProfile.Data;
 using InstantaneousGram_UserProfile.Models;
+using InstantaneousGram_UserProfile.Services;
 
 namespace InstantaneousGram_UserProfile.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class UserProfilesController : ControllerBase
+    public class UserProfileController : ControllerBase
     {
-        private readonly InstantaneousGram_UserProfileContext _context;
+        private readonly IUserProfileService _userProfileService;
 
-        public UserProfilesController(InstantaneousGram_UserProfileContext context)
+        public UserProfileController(IUserProfileService userProfileService)
         {
-            _context = context;
+            _userProfileService = userProfileService;
         }
 
-        // GET: api/UserProfiles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserProfile>>> GetUserProfile()
+        public async Task<IActionResult> GetAllUserProfiles()
         {
-          if (_context.UserProfile == null)
-          {
-              return NotFound();
-          }
-            return await _context.UserProfile.ToListAsync();
+            var userProfiles = await _userProfileService.GetAllUserProfilesAsync();
+            return Ok(userProfiles);
         }
 
-        // GET: api/UserProfiles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserProfile>> GetUserProfile(Guid id)
+        public async Task<IActionResult> GetUserProfile(int id)
         {
-          if (_context.UserProfile == null)
-          {
-              return NotFound();
-          }
-            var userProfile = await _context.UserProfile.FindAsync(id);
-
+            var userProfile = await _userProfileService.GetUserProfileByIdAsync(id);
             if (userProfile == null)
             {
                 return NotFound();
             }
-
-            return userProfile;
+            return Ok(userProfile);
         }
 
-        // PUT: api/UserProfiles/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserProfile(Guid id, UserProfile userProfile)
+        [HttpPost]
+        public async Task<IActionResult> CreateUserProfile([FromBody] UserProfile userProfile)
         {
-            if (id != userProfile.Id)
+            if (userProfile == null)
+            {
+                return BadRequest(new { message = "Invalid input" });
+            }
+            await _userProfileService.CreateUserProfileAsync(userProfile);
+            return CreatedAtAction(nameof(GetUserProfile), new { id = userProfile.UserID }, userProfile);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUserProfile(int id, [FromBody] UserProfile userProfile)
+        {
+            if (id != userProfile.UserID)
             {
                 return BadRequest();
             }
-
-            _context.Entry(userProfile).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserProfileExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _userProfileService.UpdateUserProfileAsync(userProfile);
             return NoContent();
         }
 
-        // POST: api/UserProfiles
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<UserProfile>> PostUserProfile(UserProfile userProfile)
-        {
-          if (_context.UserProfile == null)
-          {
-              return Problem("Entity set 'InstantaneousGram_UserProfileContext.UserProfile'  is null.");
-          }
-            _context.UserProfile.Add(userProfile);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUserProfile", new { id = userProfile.Id }, userProfile);
-        }
-
-        // DELETE: api/UserProfiles/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserProfile(Guid id)
+        public async Task<IActionResult> DeleteUserProfile(int id)
         {
-            if (_context.UserProfile == null)
-            {
-                return NotFound();
-            }
-            var userProfile = await _context.UserProfile.FindAsync(id);
-            if (userProfile == null)
-            {
-                return NotFound();
-            }
-
-            _context.UserProfile.Remove(userProfile);
-            await _context.SaveChangesAsync();
-
+            await _userProfileService.DeleteUserProfileAsync(id);
             return NoContent();
-        }
-
-        private bool UserProfileExists(Guid id)
-        {
-            return (_context.UserProfile?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
