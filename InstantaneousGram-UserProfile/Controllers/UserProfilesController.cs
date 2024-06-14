@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using InstantaneousGram_UserProfile.Data;
-using InstantaneousGram_UserProfile.Models;
 using InstantaneousGram_UserProfile.Services;
+using InstantaneousGram_UserProfile.Models;
+using InstantaneousGram_UserProfile.Managers;
 
 namespace InstantaneousGram_UserProfile.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class UserProfileController : ControllerBase
     {
         private readonly IUserProfileService _userProfileService;
+        private readonly RabbitMQManager _rabbitMqManager;
 
-        public UserProfileController(IUserProfileService userProfileService)
+        public UserProfileController(IUserProfileService userProfileService, RabbitMQManager rabbitMqManager)
         {
             _userProfileService = userProfileService;
+            _rabbitMqManager = rabbitMqManager;
         }
 
         [HttpGet]
@@ -67,6 +63,7 @@ namespace InstantaneousGram_UserProfile.Controllers
         public async Task<IActionResult> DeleteUserProfile(int id)
         {
             await _userProfileService.DeleteUserProfileAsync(id);
+            _rabbitMqManager.PublishUserDeletedEvent(id);
             return NoContent();
         }
     }

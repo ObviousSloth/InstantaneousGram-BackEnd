@@ -1,114 +1,47 @@
 ﻿using System;
-using InstantaneousGram_ImageAndVideoProcessing.Settings;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+
 namespace InstantaneousGram_ImageAndVideoProcessing.Managers
 {
- 
     public class RabbitMQManager
     {
-        private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly string _queueName;
-        private readonly RabbitMQSettings _rabbitMQSettings;
-        private const string ExchangeName = "TestExchange";   // Hardcoded exchange name
-        private const string RoutingKey = "TestKey";          // Hardcoded routing key
-        private const string QueueName = "TestImageQueue";    // Hardcoded queue name
+        private readonly ILogger<RabbitMQManager> _logger;
 
-
-        public RabbitMQManager(string queueName, RabbitMQSettings rabbitMQSettings)
+        public RabbitMQManager(IConnection connection, ILogger<RabbitMQManager> logger)
         {
-            _rabbitMQSettings = rabbitMQSettings;
-            var factory = new ConnectionFactory() { HostName = _rabbitMQSettings.Host };
-            _connection = factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _queueName = queueName;
-
-            _channel.QueueDeclare(queue: _queueName,
-                                  durable: false,
-                                  exclusive: false,
-                                  autoDelete: false,
-                                  arguments: null);
-        }
-        /*        public RabbitMQManager(RabbitMQSettings rabbitMQSettings)
-                {
-                    _rabbitMQSettings = rabbitMQSettings;
-                    var factory = new ConnectionFactory() { HostName = _rabbitMQSettings.Host };
-                    _connection = factory.CreateConnection();
-                    _channel = _connection.CreateModel();
-                    _queueName = "TestImageQueue";
-
-                    _channel.QueueDeclare(queue: _queueName,
-                                          durable: false,
-                                          exclusive: false,
-                                          autoDelete: false,
-                                          arguments: null);
-                }*/
-
-        public RabbitMQManager(RabbitMQSettings rabbitMQSettings)
-        {
-            _connection = new ConnectionFactory() { HostName = rabbitMQSettings.Host }.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: QueueName,
-                                  durable: false,
-                                  exclusive: false,
-                                  autoDelete: false,
-                                  arguments: null);
-            _channel.ExchangeDeclare(exchange: ExchangeName, type: ExchangeType.Direct); // Declare exchange
-            _channel.QueueBind(queue: QueueName,
-                               exchange: ExchangeName,
-                               routingKey: RoutingKey);  // Bind queue to exchange with routing key
+            _channel = connection.CreateModel();
+            _logger = logger;
+            _channel.ExchangeDeclare(exchange: "user_deletion_exchange", type: ExchangeType.Fanout);
         }
 
-        public void SendMessage(string message)
+        public void SubscribeToUserDeletedEvent(Func<int, Task> handleUserDeletedAsync)
         {
-            var body = System.Text.Encoding.UTF8.GetBytes(message);
+            var queueName = _channel.QueueDeclare().QueueName;
+            _channel.QueueBind(queue: queueName, exchange: "user_deletion_exchange", routingKey: "");
 
-            _channel.BasicPublish(exchange: "TestExchange",
-                                  routingKey: "TestKey",
-                                  basicProperties: null,
-                                  body: body);
-            Console.WriteLine(" [x] Sent {0}", message);
-        }
-
-        /*     public void ReceiveMessages()
-             {
-                 var consumer = new EventingBasicConsumer(_channel);
-                 consumer.Received += (model, ea) =>
-                 {
-                     var body = ea.Body.ToArray();
-                     var message = System.Text.Encoding.UTF8.GetString(body);
-                     Console.WriteLine(" [x] Received {0}", message);
-                 };
-                 _channel.BasicConsume(queue: _queueName,
-                                       autoAck: true,
-                                       consumer: consumer);
-
-                 Console.WriteLine(" Press [enter] to exit.");
-                 Console.ReadLine();
-             }*/
-        public void ReceiveMessages()
-        {
             var consumer = new EventingBasicConsumer(_channel);
-            consumer.Received += (model, ea) =>
+            consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
-                var message = System.Text.Encoding.UTF8.GetString(body);
-                Console.WriteLine(" [x] Received {0}", message);
+                var message = Encoding.UTF8.GetString(body);
+                if (int.TryParse(message, out int userId))
+                {
+                    _logger.LogInformation($"Received user deletion event for user ID: {userId}");
+                    await handleUserDeletedAsync(userId);
+                }
+                else
+                {
+                    _logger.LogWarning($"Failed to parse user ID from message: {message}");
+                }
             };
-            _channel.BasicConsume(queue: QueueName,
-                                  autoAck: true,
-                                  consumer: consumer);
 
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
-        }
-
-        public void CloseConnection()
-        {
-            _channel.Close();
-            _connection.Close();
+            _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+            _logger.LogInformation("Subscribed to user deletion events");
         }
     }
-
 }

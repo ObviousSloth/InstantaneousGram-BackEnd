@@ -1,4 +1,7 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿using InstantaneousGram_ImageAndVideoProcessing.Models;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace InstantaneousGram_ImageAndVideoProcessing.Services
 {
@@ -33,6 +36,9 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Services
             }
         }
 
-        // Additional methods for updating and deleting items can be added here
+        public async Task DeleteItemAsync(string id, string partitionKey)
+        {
+            await _container.DeleteItemAsync<ImageOrVideoMetadata>(id, new PartitionKey(partitionKey));
+        }
     }
 }

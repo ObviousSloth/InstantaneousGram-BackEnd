@@ -1,7 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿/*using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Policy;
 using System.Text;
 using InstantaneousGram_UserProfile.Managers;
 
@@ -12,9 +10,10 @@ namespace InstantaneousGram_UserProfile.Controllers
     public class PublishRabbitMQTest : ControllerBase
     {
         private readonly RabbitMQManager _rabbitMQManager;
-        public PublishRabbitMQTest(RabbitMQManager rabbitMQSManager) 
+
+        public PublishRabbitMQTest(RabbitMQManager rabbitMQManager)
         {
-            _rabbitMQManager = rabbitMQSManager;
+            _rabbitMQManager = rabbitMQManager;
         }
 
         [HttpPost]
@@ -23,6 +22,7 @@ namespace InstantaneousGram_UserProfile.Controllers
             _rabbitMQManager.SendMessage(message);
             return Ok("Message published successfully.");
         }
+
         [HttpPost("send")]
         public IActionResult SendMessageNew([FromBody] string message)
         {
@@ -31,3 +31,4 @@ namespace InstantaneousGram_UserProfile.Controllers
         }
     }
 }
+*/

@@ -1,4 +1,4 @@
-﻿
+﻿/*
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,3 +62,4 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
         }
     }
 }
+*/

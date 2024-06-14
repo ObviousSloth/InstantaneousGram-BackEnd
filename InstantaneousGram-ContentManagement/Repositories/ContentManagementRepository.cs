@@ -1,6 +1,9 @@
 ﻿using Instantaneousgram_ContentManagement.Data;
 using InstantaneousGram_ContentManagement.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace InstantaneousGram_ContentManagement.Repositories
 {
@@ -43,6 +46,11 @@ namespace InstantaneousGram_ContentManagement.Repositories
                 _context.ContentManagements.Remove(content);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<ContentManagement>> GetContentsByUserIdAsync(int userId) // New method
+        {
+            return await _context.ContentManagements.Where(c => c.UserID == userId).ToListAsync();
         }
     }
 }

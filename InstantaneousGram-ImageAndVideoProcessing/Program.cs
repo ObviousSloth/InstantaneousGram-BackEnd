@@ -1,63 +1,52 @@
-using CloudinaryDotNet;
-using dotenv.net;
 using InstantaneousGram_ImageAndVideoProcessing.Managers;
-using InstantaneousGram_ImageAndVideoProcessing.Settings;
-using Microsoft.Azure.Cosmos;
-using InstantaneousGram_ImageAndVideoProcessing.Services;
 using InstantaneousGram_ImageAndVideoProcessing.Repositories;
+using InstantaneousGram_ImageAndVideoProcessing.Services;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("MyPolicy",
-        builder =>
-        {
-            builder.WithOrigins(
-                "http://localhost:3000",
-                "http://localhost:5502")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-});
+DotNetEnv.Env.Load();
 
-// Register RabbitMQService with connection details
-string hostName = builder.Configuration.GetValue<string>("RabbitMQ:HostName");
-int port = int.Parse(builder.Configuration.GetValue<string>("RabbitMQ:Port"));
-string userName = builder.Configuration.GetValue<string>("RabbitMQ:UserName");
-string password = builder.Configuration.GetValue<string>("RabbitMQ:Password");
-var rabbitMQSettings = builder.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
-builder.Services.AddSingleton(rabbitMQSettings);
-builder.Services.AddScoped<RabbitMQManager>();
-
-// Add controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Set up Cloudinary credentials
-DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
-Cloudinary cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"))
+var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+if (string.IsNullOrEmpty(cloudinaryUrl))
 {
-    Api = { Secure = true }
-};
-builder.Services.AddSingleton(cloudinary);
+    throw new Exception("CLOUDINARY_URL environment variable is not set.");
+}
 
-// Add Cosmos DB service
-builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
+var account = new CloudinaryDotNet.Cloudinary(cloudinaryUrl);
+builder.Services.AddSingleton(account);
+
+builder.Services.AddSingleton(s => new CosmosClient(builder.Configuration["CosmosDb:ConnectionString"]));
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IImageAndVideoService, ImageAndVideoService>();
+builder.Services.AddScoped<IImageAndVideoRepository, ImageAndVideoRepository>();
+
+// Add RabbitMQ connection factory and connection
+builder.Services.AddSingleton<IConnection>(sp =>
 {
-    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-    var connectionString = configuration["CosmosDb:ConnectionString"];
-    return new CosmosClient(connectionString);
+    var factory = new ConnectionFactory()
+    {
+        HostName = builder.Configuration["RabbitMQ:HostName"],
+        Port = int.Parse(builder.Configuration["RabbitMQ:Port"]),
+        UserName = builder.Configuration["RabbitMQ:UserName"],
+        Password = builder.Configuration["RabbitMQ:Password"]
+    };
+    return factory.CreateConnection();
 });
 
-builder.Services.AddSingleton<CosmosDbService>();
-builder.Services.AddTransient<ImageAndVideoRepository>();
+builder.Services.AddSingleton<RabbitMQManager>();
+builder.Services.AddScoped<UserDeletionService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -65,9 +54,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthorization();
-app.UseCors("MyPolicy");
 
 app.MapControllers();
+
+// Subscribe to RabbitMQ user deletion events
+var rabbitMQManager = app.Services.GetRequiredService<RabbitMQManager>();
+
+rabbitMQManager.SubscribeToUserDeletedEvent(async (userId) =>
+{
+    using var scope = app.Services.CreateScope();
+    var userDeletionService = scope.ServiceProvider.GetRequiredService<UserDeletionService>();
+    await userDeletionService.HandleUserDeletedAsync(userId);
+});
 
 app.Run();

@@ -1,40 +1,50 @@
-
-
-using InstantaneousGram_ContentManagement.Settings;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
 using InstantaneousGram_ContentManagement.Managers;
-using Instantaneousgram_ContentManagement.Data;
 using InstantaneousGram_ContentManagement.Repositories;
 using InstantaneousGram_ContentManagement.Services;
+using Instantaneousgram_ContentManagement.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 // Add services to the container.
-// Register RabbitMQService with connection details
 string hostName = builder.Configuration.GetValue<string>("RabbitMQ:HostName");
 int port = int.Parse(builder.Configuration.GetValue<string>("RabbitMQ:Port"));
 string userName = builder.Configuration.GetValue<string>("RabbitMQ:UserName");
 string password = builder.Configuration.GetValue<string>("RabbitMQ:Password");
-var rabbitMQSettings = builder.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
-builder.Services.AddSingleton(rabbitMQSettings);
-builder.Services.AddScoped<RabbitMQManager>();
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var factory = new ConnectionFactory() { HostName = hostName, Port = port, UserName = userName, Password = password };
+var connection = factory.CreateConnection();
 
-// Configure Entity Framework and SQL Server
+builder.Services.AddSingleton(connection);
+builder.Services.AddSingleton<RabbitMQSubscriber>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register services and repositories
 builder.Services.AddScoped<IContentManagementRepository, ContentManagementRepository>();
 builder.Services.AddScoped<IContentManagementService, ContentManagementService>();
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -42,9 +52,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
+
+var rabbitMQSubscriber = app.Services.GetRequiredService<RabbitMQSubscriber>();
+rabbitMQSubscriber.Subscribe();
 
 app.Run();

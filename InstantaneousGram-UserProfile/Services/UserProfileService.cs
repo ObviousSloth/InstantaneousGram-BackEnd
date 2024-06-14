@@ -1,4 +1,7 @@
-﻿using InstantaneousGram_UserProfile.Models;
+﻿using System.Text;
+using System.Text.Json;
+using RabbitMQ.Client;
+using InstantaneousGram_UserProfile.Models;
 using InstantaneousGram_UserProfile.Repositories;
 
 namespace InstantaneousGram_UserProfile.Services
@@ -6,10 +9,12 @@ namespace InstantaneousGram_UserProfile.Services
     public class UserProfileService : IUserProfileService
     {
         private readonly IUserProfileRepository _userProfileRepository;
+        private readonly IConnection _rabbitMqConnection;
 
-        public UserProfileService(IUserProfileRepository userProfileRepository)
+        public UserProfileService(IUserProfileRepository userProfileRepository, IConnection rabbitMqConnection)
         {
             _userProfileRepository = userProfileRepository;
+            _rabbitMqConnection = rabbitMqConnection;
         }
 
         public async Task<IEnumerable<UserProfile>> GetAllUserProfilesAsync()
@@ -34,7 +39,22 @@ namespace InstantaneousGram_UserProfile.Services
 
         public async Task DeleteUserProfileAsync(int id)
         {
-            await _userProfileRepository.DeleteAsync(id);
+            var userProfile = await _userProfileRepository.GetByIdAsync(id);
+            if (userProfile != null)
+            {
+                await _userProfileRepository.DeleteAsync(id);
+
+                // Publish the deletion event
+                using (var channel = _rabbitMqConnection.CreateModel())
+                {
+                    channel.ExchangeDeclare(exchange: "user_deletion", type: ExchangeType.Fanout);
+
+                    var message = JsonSerializer.Serialize(new { UserId = id });
+                    var body = Encoding.UTF8.GetBytes(message);
+
+                    channel.BasicPublish(exchange: "user_deletion", routingKey: "", basicProperties: null, body: body);
+                }
+            }
         }
     }
 }
