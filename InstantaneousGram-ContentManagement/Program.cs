@@ -2,6 +2,10 @@
 
 using InstantaneousGram_ContentManagement.Settings;
 using InstantaneousGram_ContentManagement.Managers;
+using Instantaneousgram_ContentManagement.Data;
+using InstantaneousGram_ContentManagement.Repositories;
+using InstantaneousGram_ContentManagement.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +15,6 @@ string hostName = builder.Configuration.GetValue<string>("RabbitMQ:HostName");
 int port = int.Parse(builder.Configuration.GetValue<string>("RabbitMQ:Port"));
 string userName = builder.Configuration.GetValue<string>("RabbitMQ:UserName");
 string password = builder.Configuration.GetValue<string>("RabbitMQ:Password");
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
-Console.WriteLine("hostname: " + hostName + " port: " + port + " userName: " + userName + "password: " + password);
 var rabbitMQSettings = builder.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 builder.Services.AddSingleton(rabbitMQSettings);
 builder.Services.AddScoped<RabbitMQManager>();
@@ -24,6 +23,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configure Entity Framework and SQL Server
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register services and repositories
+builder.Services.AddScoped<IContentManagementRepository, ContentManagementRepository>();
+builder.Services.AddScoped<IContentManagementService, ContentManagementService>();
 
 var app = builder.Build();
 
