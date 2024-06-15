@@ -1,39 +1,48 @@
-﻿using InstantaneousGram_LikeAndComment.Data;
-using InstantaneousGram_LikeAndComment.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
+using InstantaneousGram_LikesAndComments.Models;
+using InstantaneousGram_LikesAndComments.Services;
 
-namespace InstantaneousGram_LikeAndComment.Controllers
+namespace InstantaneousGram_LikesAndComments.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LikesController : ControllerBase
+    public class LikeController : ControllerBase
     {
-        private readonly LikeRepository _likeRepository;
+        private readonly ILikeService _likeService;
 
-        public LikesController(LikeRepository likeRepository)
+        public LikeController(ILikeService likeService)
         {
-            _likeRepository = likeRepository;
+            _likeService = likeService;
         }
 
         [HttpPost]
         public async Task<IActionResult> AddLike([FromBody] Like like)
         {
-            await _likeRepository.AddLikeAsync(like);
+            await _likeService.AddLikeAsync(like);
             return Ok();
         }
 
-        [HttpGet("{id}/{userId}")]
-        public async Task<IActionResult> GetLike(string id, string userId)
+        [HttpDelete("{likeId}")]
+        public async Task<IActionResult> DeleteLike(Guid likeId, [FromQuery] string userId)
         {
-            var like = await _likeRepository.GetLikeAsync(id, userId);
-            if (like == null)
-            {
-                return NotFound();
-            }
-            return Ok(like);
+            await _likeService.DeleteLikeAsync(likeId, userId);
+            return Ok();
         }
 
-        // Additional actions for updating and deleting likes can be added here
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetLikesByUserId(string userId)
+        {
+            var likes = await _likeService.GetLikesByUserIdAsync(userId);
+            return Ok(likes);
+        }
+
+        [HttpGet("user/{userId}/post/{postId}")]
+        public async Task<IActionResult> GetLikesByUserAndPost(string userId, string postId)
+        {
+            var like = await _likeService.GetLikeByUserAndPostAsync(userId, postId);
+            return Ok(like);
+        }
     }
 }

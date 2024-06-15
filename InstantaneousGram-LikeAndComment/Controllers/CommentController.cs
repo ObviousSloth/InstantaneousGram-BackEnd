@@ -1,39 +1,48 @@
-﻿using InstantaneousGram_LikeAndComment.Data;
-using InstantaneousGram_LikeAndComment.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+using InstantaneousGram_LikesAndComments.Models;
+using InstantaneousGram_LikesAndComments.Services;
 
-namespace InstantaneousGram_LikeAndComment.Controllers
+namespace InstantaneousGram_LikesAndComments.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CommentsController : ControllerBase
+    public class CommentController : ControllerBase
     {
-        private readonly CommentRepository _commentRepository;
+        private readonly ICommentService _commentService;
 
-        public CommentsController(CommentRepository commentRepository)
+        public CommentController(ICommentService commentService)
         {
-            _commentRepository = commentRepository;
+            _commentService = commentService;
         }
 
         [HttpPost]
         public async Task<IActionResult> AddComment([FromBody] Comment comment)
         {
-            await _commentRepository.AddCommentAsync(comment);
+            await _commentService.AddCommentAsync(comment);
             return Ok();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetComment(string id, string userId)
+        [HttpDelete("{commentId}")]
+        public async Task<IActionResult> DeleteComment(Guid commentId, [FromQuery] string userId)
         {
-            var comment = await _commentRepository.GetCommentAsync(id, userId);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-            return Ok(comment);
+            await _commentService.DeleteCommentAsync(commentId, userId);
+            return Ok();
         }
 
-        // Additional actions for updating and deleting comments can be added here
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetCommentsByUserId(string userId)
+        {
+            var comments = await _commentService.GetCommentsByUserIdAsync(userId);
+            return Ok(comments);
+        }
+
+        [HttpGet("user/{userId}/post/{postId}")]
+        public async Task<IActionResult> GetCommentsByUserAndPost(string userId, string postId)
+        {
+            var comments = await _commentService.GetCommentsByUserAndPostAsync(userId, postId);
+            return Ok(comments);
+        }
     }
 }

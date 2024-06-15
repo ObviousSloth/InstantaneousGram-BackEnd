@@ -1,9 +1,10 @@
-﻿using InstantaneousGram_LikeAndComment.Models;
+﻿using InstantaneousGram_LikesAndComments.Models;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
-using InstantaneousGram_LikeAndComment.Settings;
+using InstantaneousGram_LikesAndComments.Settings;
 
-namespace InstantaneousGram_LikeAndComment.Data
+
+namespace InstantaneousGram_LikesAndComments.Data
 {
     public class CosmosDbContext
     {

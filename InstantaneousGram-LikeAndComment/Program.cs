@@ -1,39 +1,56 @@
-using InstantaneousGram_LikeAndComment.Data;
-using InstantaneousGram_LikeAndComment.Settings;
-using InstantaneousGram_LikeAndComment.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using InstantaneousGram_LikesAndComments.Repositories;
+using InstantaneousGram_LikesAndComments.Services;
+using InstantaneousGram_LikesAndComments.Settings;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
+using InstantaneousGram_LikesAndComments.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Enable CORS
-builder.Services.AddCors(options =>
+// Add services to the container.
+builder.Services.Configure<CosmosDbSettings>(builder.Configuration.GetSection("CosmosDb"));
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
+
+builder.Services.AddSingleton(s =>
 {
-    options.AddPolicy("AllowAllOrigins",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+    var settings = s.GetRequiredService<IOptions<CosmosDbSettings>>().Value;
+    return new CosmosClient(settings.ConnectionString);
 });
 
-// Add services to the container.
+builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+
+// Add RabbitMQ services
+builder.Services.AddSingleton<IConnectionFactory, ConnectionFactory>(sp =>
+{
+    var factory = new ConnectionFactory()
+    {
+        HostName = builder.Configuration["RabbitMQ:HostName"],
+        Port = int.Parse(builder.Configuration["RabbitMQ:Port"]),
+        UserName = builder.Configuration["RabbitMQ:UserName"],
+        Password = builder.Configuration["RabbitMQ:Password"]
+    };
+    return factory;
+});
+
+builder.Services.AddSingleton<IConnection>(sp =>
+{
+    var factory = sp.GetRequiredService<IConnectionFactory>();
+    return factory.CreateConnection();
+});
+
+builder.Services.AddSingleton<RabbitMQListener>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<RabbitMQListener>());
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Add Cosmos DB service
-builder.Services.AddSingleton<CosmosClient>(serviceProvider =>
-{
-    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-    var connectionString = configuration["CosmosDb:ConnectionString"];
-    return new CosmosClient(connectionString);
-});
-
-builder.Services.AddSingleton<CosmosDbService>();
-builder.Services.AddTransient<LikeRepository>();
-builder.Services.AddTransient<CommentRepository>();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -45,9 +62,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
