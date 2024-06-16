@@ -62,6 +62,21 @@ spec:
             secretKeyRef:
               name: cloudinary-secret
               key: CLOUDINARY_URL
+        - name: CosmosDb__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials-media
+              key: cosmosdb-connection-string
+        - name: CosmosDb__DatabaseName
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials-media
+              key: cosmosdb-database-name
+        - name: CosmosDb__ContainerName
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials-media
+              key: cosmosdb-container-name
         resources:
           requests:
             cpu: "100m"
@@ -69,7 +84,6 @@ spec:
           limits:
             cpu: "500m"
             memory: "256Mi"
-
 ---
 apiVersion: v1
 kind: Service

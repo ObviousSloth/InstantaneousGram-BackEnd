@@ -13,12 +13,14 @@ namespace InstantaneousGram_LikesAndComments.Managers
 {
     public class RabbitMQListener : BackgroundService
     {
+        private readonly IConnection _connection;
         private readonly IModel _channel;
         private readonly ILogger<RabbitMQListener> _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public RabbitMQListener(IConnection connection, ILogger<RabbitMQListener> logger, IServiceScopeFactory serviceScopeFactory)
         {
+            _connection = connection;
             _channel = connection.CreateModel();
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
@@ -62,8 +64,10 @@ namespace InstantaneousGram_LikesAndComments.Managers
 
         public override void Dispose()
         {
-            _channel.Close();
-            _channel.Dispose();
+            _channel?.Close();
+            _channel?.Dispose();
+            _connection?.Close();
+            _connection?.Dispose();
             base.Dispose();
         }
     }

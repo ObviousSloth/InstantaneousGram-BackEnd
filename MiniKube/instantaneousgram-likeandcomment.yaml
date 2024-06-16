@@ -57,6 +57,21 @@ spec:
             secretKeyRef:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
+        - name: CosmosDb__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials
+              key: cosmosdb-connection-string
+        - name: CosmosDb__DatabaseName
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials
+              key: cosmosdb-database-name
+        - name: CosmosDb__ContainerName
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials
+              key: cosmosdb-container-name
         resources:
           requests:
             cpu: "100m"
@@ -68,7 +83,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: instantaneousgram-likeandcommentclusterip
+  name: instantaneousgram-likeandcomment-clusterip
   namespace: instantaneousgram
 spec:
   type: ClusterIP

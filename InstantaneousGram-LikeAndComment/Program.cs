@@ -45,7 +45,7 @@ builder.Services.AddSingleton<IConnection>(sp =>
 });
 
 builder.Services.AddSingleton<RabbitMQListener>();
-builder.Services.AddHostedService(sp => sp.GetRequiredService<RabbitMQListener>());
+builder.Services.AddHostedService<RabbitMQListener>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
