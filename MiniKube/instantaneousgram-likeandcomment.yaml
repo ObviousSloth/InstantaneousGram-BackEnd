@@ -24,7 +24,7 @@ spec:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: RabbitMQ__HostName
-          value: "rabbitmq"
+          value: "rabbitmq-clusterip.instantaneousgram.svc.cluster.local"
         - name: RabbitMQ__Port
           value: "5672"
         - name: RabbitMQ__UserName

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +9,35 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        // GET: api/<TestController>
         [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
-        // GET api/<TestController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("rabbitmq-test")]
+        public IActionResult TestRabbitMQ()
         {
-            return "value";
-        }
+            try
+            {
+                var factory = new ConnectionFactory()
+                {
+                    HostName = Environment.GetEnvironmentVariable("RabbitMQ__HostName"),
+                    Port = int.Parse(Environment.GetEnvironmentVariable("RabbitMQ__Port")),
+                    UserName = Environment.GetEnvironmentVariable("RabbitMQ__UserName"),
+                    Password = Environment.GetEnvironmentVariable("RabbitMQ__Password")
+                };
 
-        // POST api/<TestController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<TestController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<TestController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    return Ok("RabbitMQ connection successful!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"RabbitMQ connection failed: {ex.Message}");
+            }
         }
     }
 }

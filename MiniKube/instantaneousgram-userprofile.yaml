@@ -13,6 +13,11 @@ spec:
       labels:
         app: instantaneousgram-userprofile
     spec:
+      dnsConfig:
+        searches:
+          - instantaneousgram.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
       containers:
       - name: instantaneousgram-userprofile
         image: slothh/instantaneousgram-userprofileservices:latest
@@ -24,7 +29,7 @@ spec:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: RabbitMQ__HostName
-          value: "rabbitmq"
+          value: "rabbitmq-clusterip.instantaneousgram.svc.cluster.local"
         - name: RabbitMQ__Port
           value: "5672"
         - name: RabbitMQ__UserName
@@ -69,7 +74,6 @@ spec:
           limits:
             cpu: "500m"
             memory: "256Mi"
-
 ---
 apiVersion: v1
 kind: Service

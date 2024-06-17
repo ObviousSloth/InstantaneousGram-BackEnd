@@ -8,12 +8,12 @@ namespace InstantaneousGram_UserProfile.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserProfileController : ControllerBase
+    public class ProfileController : ControllerBase
     {
         private readonly IUserProfileService _userProfileService;
         private readonly RabbitMQManager _rabbitMqManager;
 
-        public UserProfileController(IUserProfileService userProfileService, RabbitMQManager rabbitMqManager)
+        public ProfileController(IUserProfileService userProfileService, RabbitMQManager rabbitMqManager)
         {
             _userProfileService = userProfileService;
             _rabbitMqManager = rabbitMqManager;

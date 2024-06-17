@@ -4,7 +4,7 @@ metadata:
   name: rabbitmq
   namespace: instantaneousgram
 spec:
-  serviceName: "rabbitmq"
+  serviceName: "rabbitmq-clusterip"
   replicas: 2
   selector:
     matchLabels:
