@@ -4,8 +4,11 @@ metadata:
   name: instantaneousgram-ingress
   namespace: instantaneousgram
   annotations:
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
 spec:
   ingressClassName: nginx
   rules:
@@ -17,33 +20,5 @@ spec:
             backend:
               service:
                 name: instantaneousgram-userprofile-clusterip
-                port:
-                  number: 80
-          - path: /authentication(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: instantaneousgram-authentication-clusterip
-                port:
-                  number: 80
-          - path: /contentmanagement(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: instantaneousgram-contentmanagement-clusterip
-                port:
-                  number: 80
-          - path: /imageandvideoprocessing(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: instantaneousgram-imageandvideoprocessing-clusterip
-                port:
-                  number: 80
-          - path: /likeandcomment(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: instantaneousgram-likeandcomment-clusterip
                 port:
                   number: 80

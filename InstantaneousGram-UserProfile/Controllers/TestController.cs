@@ -34,7 +34,12 @@ namespace InstantaneousGram_UserProfile.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"RabbitMQ connection failed: {ex.Message}");
+                var host = Environment.GetEnvironmentVariable("RabbitMQ__HostName");
+                var port = Environment.GetEnvironmentVariable("RabbitMQ__Port");
+                var user = Environment.GetEnvironmentVariable("RabbitMQ__UserName");
+                var password = Environment.GetEnvironmentVariable("RabbitMQ__Password");
+
+                return StatusCode(500, $"RabbitMQ connection failed: {ex.Message}\nHost: {host}\nPort: {port}\nUser: {user}\nPassword: {password}");
             }
         }
     }
