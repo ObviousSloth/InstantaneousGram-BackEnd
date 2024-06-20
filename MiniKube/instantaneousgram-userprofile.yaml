@@ -62,11 +62,6 @@ spec:
             secretKeyRef:
               name: rabbitmq-auth0-credentials
               key: auth0-domain
-        - name: ConnectionStrings__InstantaneousGram_UserContext
-          valueFrom:
-            secretKeyRef:
-              name: connection-string-secret
-              key: InstantaneousGram_UserContext
         resources:
           requests:
             cpu: "100m"

@@ -6,7 +6,7 @@ using InstantaneousGram_UserProfile.Managers;
 
 namespace InstantaneousGram_UserProfile.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("userprofile/api/[controller]")]
     [ApiController]
     public class ProfileController : ControllerBase
     {

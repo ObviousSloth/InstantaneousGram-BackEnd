@@ -3,7 +3,7 @@ using RabbitMQ.Client;
 
 namespace InstantaneousGram_UserProfile.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("userprofile/api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {
