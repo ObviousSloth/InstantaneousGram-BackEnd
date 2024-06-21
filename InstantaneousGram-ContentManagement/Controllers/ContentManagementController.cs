@@ -5,7 +5,7 @@ using InstantaneousGram_ContentManagement.Services;
 
 namespace Instantaneousgram_ContentManagement.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("contentmanagement/api/[controller]")]
     [ApiController]
     public class ContentManagementController : ControllerBase
     {

@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 
 namespace Instantaneousgram_ContentManagement.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("contentmanagement/api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {

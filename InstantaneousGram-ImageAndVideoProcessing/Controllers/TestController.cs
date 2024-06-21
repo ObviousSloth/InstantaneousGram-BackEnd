@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 
 namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("imageandvideoprocessing/api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {

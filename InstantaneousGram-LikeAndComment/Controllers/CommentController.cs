@@ -7,7 +7,7 @@ using InstantaneousGram_LikesAndComments.Services;
 namespace InstantaneousGram_LikesAndComments.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("likesandcomments/api/[controller]")]
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
