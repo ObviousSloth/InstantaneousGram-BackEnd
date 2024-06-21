@@ -5,7 +5,7 @@ using RabbitMQ.Client;
 
 namespace InstantaneousGram_LikesAndComments.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("likesandcomments/api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {

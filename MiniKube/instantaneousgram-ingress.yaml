@@ -1,71 +1,48 @@
-kind: Ingress
 apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: instantaneousgram-ingress
   namespace: instantaneousgram
-  uid: 420bdb0e-0a5c-49a6-80bf-18e2a815b056
-  resourceVersion: '40716'
-  generation: 4
-  creationTimestamp: '2024-06-18T20:44:45Z'
   annotations:
-<<<<<<< Updated upstream
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-=======
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  managedFields:
-    - manager: Mozilla
-      operation: Update
-      apiVersion: networking.k8s.io/v1
-      time: '2024-06-18T20:44:45Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations: {}
-        f:spec:
-          f:ingressClassName: {}
-    - manager: nginx-ingress-controller
-      operation: Update
-      apiVersion: networking.k8s.io/v1
-      time: '2024-06-18T20:45:18Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:status:
-          f:loadBalancer:
-            f:ingress: {}
-      subresource: status
-    - manager: kubectl-edit
-      operation: Update
-      apiVersion: networking.k8s.io/v1
-      time: '2024-06-18T22:41:36Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:annotations:
-            f:nginx.ingress.kubernetes.io/rewrite-target: {}
-        f:spec:
-          f:rules: {}
->>>>>>> Stashed changes
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - instantaneousgram.ddns.net
+      secretName: keyvault-instantaneousgram-ingress
   rules:
     - host: instantaneousgram.ddns.net
       http:
         paths:
-          - path: /api(/|$)(.*)
+          - path: /userprofile(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: instantaneousgram-userprofile-clusterip
                 port:
                   number: 80
-<<<<<<< Updated upstream
-=======
-status:
-  loadBalancer:
-    ingress:
-      - ip: 52.254.98.212
->>>>>>> Stashed changes
+          - path: /contentmanagement(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-contentmanagement-clusterip
+                port:
+                  number: 80
+          - path: /likesandcomments(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-likeandcomment-clusterip
+                port:
+                  number: 80
+          - path: /imageandvideoprocessing(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-imageandvideoprocessing-clusterip
+                port:
+                  number: 80
