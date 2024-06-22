@@ -5,6 +5,33 @@ metadata:
   namespace: instantaneousgram
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-url: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/authorize?response_type=id_token&scope=openid%20email&client_id=ue1Mw7tSlbiOKSKaZrUhpaXOwCmo2ULi&redirect_uri=$scheme://$host$request_uri&nonce=static-nonce"
+    nginx.ingress.kubernetes.io/auth-signin: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/authorize?response_type=id_token&scope=openid%20email&client_id=ue1Mw7tSlbiOKSKaZrUhpaXOwCmo2ULi&redirect_uri=$scheme://$host$request_uri&nonce=static-nonce"
+    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization"
+    nginx.ingress.kubernetes.io/auth-jwt-key: |
+      {
+        "keys": [
+          {
+            "kty": "RSA",
+            "alg": "RS256",
+            "use": "sig",
+            "kid": "nQy8uvhdpzbk2q0RXMnqX",
+            "n": "ykzcvSjuuuj0shHZ2YMvmR-sT64FZIcocbpzvOxaPF3Q1rRz5rgLM28tsWTBKjWGKOqjvYH3OMthdixgMF0KMFm0jx2qdL5hhzjRd21PGj7v6UmW05hkBoYdJGmYJTx4jpBX5AypMq-wKmT5rWEK19YfmTqrfzgp1BTnXQttHQvrztpVC-aj0g0a0IQVPCmbmwDqfZl7_3APvt6HQ-_jpLJ0hS9_1oa_gAKmncRVKZzFmO3h-m7U6SjvBreYnNTNR-whQdoNV5cubJaSZ0YopQb4Eh01xr3L97E83B4bhLmbLU7smY1mJhx3S9WugkyUGj5JszVlKeLCdZwIkQPi3w",
+            "e": "AQAB"
+          },
+          {
+            "kty": "RSA",
+            "use": "sig",
+            "n": "q2ZnvB5gUp4suhmZgcjNbkHCh95bhqfuYg_p1IveFK6bNTqUpx3p6WaTNksFffq00ac5AWmt3XBf3W_kepd3p40ymw4ZRk9LhvGvPVhJyAa7a8rWP8syaStlDh17hiJTyjyezZzn1icHOA3gXTvK1Nq4KFCYJFGqxWQUZ7oaozz7w49wMadgeVl6ilpF-zs-G58U53If_dcTwX4GD5joRZZ8PjbllFOmaZeEwmhrVE6d8_XiIN_S_SGvIJbfxTF8TNwD35TaWDUA35NP7_KFpS6_4Qz064wk38endX6wSFPD-2VQTdw_5V1gvtHBFlGEw2YoaGJivVobuE9uxhia-Q",
+            "e": "AQAB",
+            "kid": "3wzXEI0Sqi_gwBvoeTsQZ"
+          }
+        ]
+      }
+    nginx.ingress.kubernetes.io/auth-jwt-realm: "Authentication Required"
+    nginx.ingress.kubernetes.io/auth-jwt-alg: "RS256"
+    nginx.ingress.kubernetes.io/auth-jwt-issuer: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/"
+    nginx.ingress.kubernetes.io/auth-jwt-aud: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/api/v2/"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
@@ -18,6 +45,20 @@ spec:
     - host: instantaneousgram.ddns.net
       http:
         paths:
+          - path: /auth/api/login
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-authentication-clusterip
+                port:
+                  number: 80
+          - path: /auth(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: instantaneousgram-authentication-clusterip
+                port:
+                  number: 80
           - path: /userprofile(/|$)(.*)
             pathType: ImplementationSpecific
             backend:

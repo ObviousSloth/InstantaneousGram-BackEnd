@@ -4,6 +4,8 @@
 
 namespace InstantaneousGram_Authentication.Controllers
 {
+    [Route("auth/api/[controller]")]
+    [ApiController]
     public class TestController : ControllerBase
     {
         [HttpGet]
