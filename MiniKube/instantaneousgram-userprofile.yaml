@@ -64,11 +64,11 @@ spec:
               key: auth0-domain
         resources:
           requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
+            cpu: "250m"
             memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "512Mi"
 ---
 apiVersion: v1
 kind: Service

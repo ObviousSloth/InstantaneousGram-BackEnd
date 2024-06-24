@@ -5,6 +5,26 @@ metadata:
   namespace: instantaneousgram
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-url: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/.well-known/jwks.json"
+    nginx.ingress.kubernetes.io/auth-signin: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/authorize?response_type=id_token&scope=openid%20email&client_id=ue1Mw7tSlbiOKSKaZrUhpaXOwCmo2ULi&redirect_uri=$scheme://$host$request_uri"
+    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization"
+    nginx.ingress.kubernetes.io/auth-jwt-key: |
+      {
+        "keys": [
+          {
+            "kty": "RSA",
+            "alg": "RS256",
+            "use": "sig",
+            "kid": "nQy8uvhdpzbk2q0RXMnqX",
+            "n": "ykzcvSjuuuj0shHZ2YMvmR-sT64FZIcocbpzvOxaPF3Q1rRz5rgLM28tsWTBKjWGKOqjvYH3OMthdixgMF0KMFm0jx2qdL5hhzjRd21PGj7v6UmW05hkBoYdJGmYJTx4jpBX5AypMq-wKmT5rWEK19YfmTqrfzgp1BTnXQttHQvrztpVC-aj0g0a0IQVPCmbmwDqfZl7_3APvt6HQ-_jpLJ0hS9_1oa_gAKmncRVKZzFmO3h-m7U6SjvBreYnNTNR-whQdoNV5cubJaSZ0YopQb4Eh01xr3L97E83B4bhLmbLU7smY1mJhx3S9WugkyUGj5JszVlKeLCdZwIkQPi3w",
+            "e": "AQAB"
+          }
+        ]
+      }
+    nginx.ingress.kubernetes.io/auth-jwt-realm: "Authentication Required"
+    nginx.ingress.kubernetes.io/auth-jwt-alg: "RS256"
+    nginx.ingress.kubernetes.io/auth-jwt-issuer: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/"
+    nginx.ingress.kubernetes.io/auth-jwt-aud: "https://dev-dnohfzqvjl7ifulf.us.auth0.com/api/v2/"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
