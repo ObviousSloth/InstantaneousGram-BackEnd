@@ -25,7 +25,7 @@ spec:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: RabbitMQ__HostName
-          value: "rabbitmq-clusterip.instantaneousgram.svc.cluster.local"
+          value: "rabbitmq.instantaneousgram.svc.cluster.local"
         - name: RabbitMQ__Port
           value: "5672"
         - name: RabbitMQ__UserName
@@ -80,11 +80,11 @@ spec:
               key: cosmosdb-container-name
         resources:
           requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
             cpu: "100m"
             memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service

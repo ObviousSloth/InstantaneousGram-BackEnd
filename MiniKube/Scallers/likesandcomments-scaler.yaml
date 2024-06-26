@@ -1,15 +1,15 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: likeandcomment-hpa
+  name: instantaneousgram-likesandcomments-hpa
   namespace: instantaneousgram
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: instantaneousgram-likeandcomment
-  minReplicas: 3
-  maxReplicas: 10
+    name: instantaneousgram-likesandcomments
+  minReplicas: 1
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:

@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: instantaneousgram-imageandvideoprocessing-hpa
+  name: instantaneousgram-authentication-hpa
   namespace: instantaneousgram
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: instantaneousgram-imageandvideoprocessing
+    name: instantaneousgram-authentication
   minReplicas: 1
   maxReplicas: 5
   metrics:

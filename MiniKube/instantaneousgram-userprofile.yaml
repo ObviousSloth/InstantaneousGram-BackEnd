@@ -30,7 +30,7 @@ spec:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: RabbitMQ__HostName
-          value: "rabbitmq-clusterip.instantaneousgram.svc.cluster.local"
+          value: "rabbitmq.instantaneousgram.svc.cluster.local"
         - name: RabbitMQ__Port
           value: "5672"
         - name: RabbitMQ__UserName
@@ -65,11 +65,11 @@ spec:
               key: auth0-domain
         resources:
           requests:
-            cpu: "250m"
-            memory: "256Mi"
+            cpu: "50m"
+            memory: "64Mi"
           limits:
-            cpu: "1"
-            memory: "512Mi"
+            cpu: "100m"
+            memory: "128Mi"
 ---
 apiVersion: v1
 kind: Service
