@@ -19,16 +19,17 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Controllers
         [HttpPost("upload/image")]
         public async Task<IActionResult> UploadImage([FromForm] IFormFile file, [FromForm] string userId)
         {
-            var url = await _imageAndVideoService.UploadImageAsync(file, userId);
-            return Ok(new { Url = url });
+            var result = await _imageAndVideoService.UploadImageAsync(file, userId);
+            return Ok(result); // Return the full metadata object
         }
 
         [HttpPost("upload/video")]
         public async Task<IActionResult> UploadVideo([FromForm] IFormFile file, [FromForm] string userId)
         {
-            var url = await _imageAndVideoService.UploadVideoAsync(file, userId);
-            return Ok(new { Url = url });
+            var result = await _imageAndVideoService.UploadVideoAsync(file, userId);
+            return Ok(result); // Return the full metadata object
         }
+
 
         [HttpGet("get/{mediaId}")]
         public async Task<IActionResult> GetMedia(string mediaId)

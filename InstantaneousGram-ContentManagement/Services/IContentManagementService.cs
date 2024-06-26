@@ -10,7 +10,7 @@ namespace InstantaneousGram_ContentManagement.Services
         Task<ContentManagement> GetContentByIdAsync(int id);
         Task CreateContentAsync(ContentManagement content);
         Task UpdateContentAsync(ContentManagement content);
-        Task DeleteContentAsync(int id);
-        Task DeleteAllContentByUserAsync(int userId); // Add this method
+/*        Task DeleteContentAsync(int id);
+        Task DeleteAllContentByUserAsync(int userId); // Add this method*/
     }
 }

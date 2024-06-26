@@ -48,7 +48,7 @@ namespace InstantaneousGram_ContentManagement.Repositories
             }
         }
 
-        public async Task<IEnumerable<ContentManagement>> GetContentsByUserIdAsync(int userId) // New method
+        public async Task<IEnumerable<ContentManagement>> GetContentsByUserIdAsync(string userId) // Corrected method
         {
             return await _context.ContentManagements.Where(c => c.UserID == userId).ToListAsync();
         }

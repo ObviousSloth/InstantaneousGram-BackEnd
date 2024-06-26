@@ -9,8 +9,10 @@ namespace InstantaneousGram_UserProfile.Services
     {
         Task<IEnumerable<UserProfile>> GetAllUserProfilesAsync();
         Task<UserProfile> GetUserProfileByIdAsync(int id);
+        Task<UserProfile> GetUserProfileByAuthIdAsync(string authId);
         Task CreateUserProfileAsync(UserProfile userProfile);
         Task UpdateUserProfileAsync(UserProfile userProfile);
         Task DeleteUserProfileAsync(int id);
+
     }
 }

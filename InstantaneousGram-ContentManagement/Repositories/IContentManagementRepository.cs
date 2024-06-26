@@ -11,6 +11,6 @@ namespace InstantaneousGram_ContentManagement.Repositories
         Task CreateContentAsync(ContentManagement content);
         Task UpdateContentAsync(ContentManagement content);
         Task DeleteContentAsync(int id);
-        Task<IEnumerable<ContentManagement>> GetContentsByUserIdAsync(int userId); // New method
+        Task<IEnumerable<ContentManagement>> GetContentsByUserIdAsync(string userId); // Update to string
     }
 }

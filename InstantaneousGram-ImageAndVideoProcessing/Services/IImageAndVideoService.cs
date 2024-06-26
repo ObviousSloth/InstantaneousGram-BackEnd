@@ -8,8 +8,8 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Services
 {
     public interface IImageAndVideoService
     {
-        Task<string> UploadImageAsync(IFormFile file, string userId);
-        Task<string> UploadVideoAsync(IFormFile file, string userId);
+        Task<ImageOrVideoMetadata> UploadImageAsync(IFormFile file, string userId);
+        Task<ImageOrVideoMetadata> UploadVideoAsync(IFormFile file, string userId);
         Task<GetResourceResult> GetMediaAsync(string publicId);
         Task<ImageOrVideoMetadata> GetMetadataAsync(string id, string userId);
         Task<IEnumerable<ImageOrVideoMetadata>> GetMetadataByUserIdAsync(string userId);

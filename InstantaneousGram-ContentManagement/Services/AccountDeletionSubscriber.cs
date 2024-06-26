@@ -33,7 +33,8 @@ namespace InstantaneousGram_ContentManagement.Services
                 var message = Encoding.UTF8.GetString(body);
                 var userId = int.Parse(message);
 
-                await _contentManagementService.DeleteAllContentByUserAsync(userId);
+               /* await _contentManagementService.DeleteAllContentByUserAsync(userId);
+*/
             };
 
             channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);

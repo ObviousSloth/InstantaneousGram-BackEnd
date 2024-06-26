@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using InstantaneousGram_UserProfile.Services;
 using InstantaneousGram_UserProfile.Models;
 using InstantaneousGram_UserProfile.Managers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InstantaneousGram_UserProfile.Controllers
 {
     [Route("userprofile/api/[controller]")]
     [ApiController]
+    
     public class ProfileController : ControllerBase
     {
         private readonly IUserProfileService _userProfileService;
@@ -37,6 +39,17 @@ namespace InstantaneousGram_UserProfile.Controllers
             return Ok(userProfile);
         }
 
+        [HttpGet("auth/{authId}")]
+        public async Task<IActionResult> GetUserProfileByAuthId(string authId)
+        {
+            var userProfile = await _userProfileService.GetUserProfileByAuthIdAsync(authId);
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+            return Ok(userProfile);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateUserProfile([FromBody] UserProfile userProfile)
         {
@@ -49,11 +62,22 @@ namespace InstantaneousGram_UserProfile.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserProfile(int id, [FromBody] UserProfile userProfile)
+        public async Task<IActionResult> UpdateUserProfileById(int id, [FromBody] UserProfile userProfile)
         {
             if (id != userProfile.UserID)
             {
                 return BadRequest();
+            }
+            await _userProfileService.UpdateUserProfileAsync(userProfile);
+            return NoContent();
+        }
+
+        [HttpPut("auth/{authId}")]
+        public async Task<IActionResult> UpdateUserProfileByAuthId(string authId, [FromBody] UserProfile userProfile)
+        {
+            if (authId != userProfile.Auth0Id)
+            {
+                return BadRequest("Auth0Id mismatch");
             }
             await _userProfileService.UpdateUserProfileAsync(userProfile);
             return NoContent();

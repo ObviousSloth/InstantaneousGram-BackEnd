@@ -22,7 +22,10 @@ namespace InstantaneousGram_UserProfile.Repositories
         {
             return await _context.UserProfiles.FindAsync(id);
         }
-
+        public async Task<UserProfile> GetByAuthIdAsync(string authId)
+        {
+            return await _context.UserProfiles.FirstOrDefaultAsync(up => up.Auth0Id == authId);
+        }
         public async Task AddAsync(UserProfile userProfile)
         {
             await _context.UserProfiles.AddAsync(userProfile);

@@ -9,5 +9,6 @@ namespace InstantaneousGram_UserProfile.Repositories
         Task AddAsync(UserProfile userProfile);
         Task UpdateAsync(UserProfile userProfile);
         Task DeleteAsync(int id);
+        Task<UserProfile> GetByAuthIdAsync(string authId);
     }
 }

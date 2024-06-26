@@ -9,10 +9,10 @@ namespace InstantaneousGram_ContentManagement.Models
         public int PostID { get; set; }
 
         [Required]
-        public int UserID { get; set; }
+        public string UserID { get; set; }
 
         [Required]
-        public int MediaID { get; set; }
+        public string MediaID { get; set; }
 
         public string Caption { get; set; }
         public DateTime CreatedAt { get; set; }

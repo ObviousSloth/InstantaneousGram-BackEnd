@@ -56,11 +56,11 @@ namespace Instantaneousgram_ContentManagement.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+/*        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContent(int id)
         {
             await _contentService.DeleteContentAsync(id);
             return NoContent();
-        }
+        }*/
     }
 }

@@ -19,7 +19,7 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Services
             _imageAndVideoRepository = imageAndVideoRepository;
         }
 
-        public async Task<string> UploadImageAsync(IFormFile file, string userId)
+        public async Task<ImageOrVideoMetadata> UploadImageAsync(IFormFile file, string userId)
         {
             var uploadResult = await _cloudinaryService.UploadImageAsync(file);
             var createdAt = uploadResult.CreatedAt != default ? uploadResult.CreatedAt : DateTime.UtcNow;
@@ -32,10 +32,10 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Services
                 Timestamp = createdAt
             };
             await _imageAndVideoRepository.AddMediaAsync(metadata);
-            return uploadResult.SecureUrl.ToString();
+            return metadata;
         }
 
-        public async Task<string> UploadVideoAsync(IFormFile file, string userId)
+        public async Task<ImageOrVideoMetadata> UploadVideoAsync(IFormFile file, string userId)
         {
             var uploadResult = await _cloudinaryService.UploadVideoAsync(file);
             var createdAt = uploadResult.CreatedAt != default ? uploadResult.CreatedAt : DateTime.UtcNow;
@@ -48,8 +48,9 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Services
                 Timestamp = createdAt
             };
             await _imageAndVideoRepository.AddMediaAsync(metadata);
-            return uploadResult.SecureUrl.ToString();
+            return metadata;
         }
+
 
         public async Task<GetResourceResult> GetMediaAsync(string publicId)
         {

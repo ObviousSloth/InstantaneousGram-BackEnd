@@ -8,6 +8,9 @@ namespace InstantaneousGram_UserProfile.Models
         public int UserID { get; set; }
 
         [Required]
+        public string Auth0Id { get; set; }
+
+        [Required]
         public string Username { get; set; }
 
         [Required]

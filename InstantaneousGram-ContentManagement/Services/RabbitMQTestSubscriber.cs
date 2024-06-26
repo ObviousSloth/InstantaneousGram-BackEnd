@@ -32,13 +32,13 @@ namespace InstantaneousGram_ContentManagement.Managers
                 var message = Encoding.UTF8.GetString(body);
                 if (int.TryParse(message, out int userId))
                 {
-                    await HandleUserDeletedEvent(userId);
+                  /*  await HandleUserDeletedEvent(userId);*/
                 }
             };
 
             _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
         }
-
+/*
         private async Task HandleUserDeletedEvent(int userId)
         {
             using (var scope = _serviceProvider.CreateScope())
@@ -46,6 +46,6 @@ namespace InstantaneousGram_ContentManagement.Managers
                 var contentManagementService = scope.ServiceProvider.GetRequiredService<IContentManagementService>();
                 await contentManagementService.DeleteAllContentByUserAsync(userId);
             }
-        }
+        }*/
     }
 }
