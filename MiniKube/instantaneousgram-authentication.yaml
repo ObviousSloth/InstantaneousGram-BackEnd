@@ -16,6 +16,7 @@ spec:
       containers:
       - name: instantaneousgram-authentication
         image: slothh/instantaneousgram-authenticationservices:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:

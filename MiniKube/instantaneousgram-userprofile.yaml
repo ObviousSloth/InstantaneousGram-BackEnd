@@ -21,6 +21,7 @@ spec:
       containers:
       - name: instantaneousgram-userprofile
         image: slothh/instantaneousgram-userprofileservices:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:

@@ -16,6 +16,7 @@ spec:
       containers:
       - name: instantaneousgram-imageandvideoprocessing
         image: slothh/instantaneousgram-imageandvideoprocessing:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         env:
