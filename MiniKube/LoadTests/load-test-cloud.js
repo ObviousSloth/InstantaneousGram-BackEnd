@@ -10,6 +10,7 @@ export let options = {
     { duration: '2m', target: 100 },  // ramp up to 100 users over 2 minutes
     { duration: '5m', target: 100 },  // stay at 100 users for 5 minutes
   ],
+  insecureSkipTLSVerify: true,  // Disable TLS verification
 };
 
 export default function () {

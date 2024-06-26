@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace InstantaneousGram_UserProfile.Models
 {
     public class UserProfile
     {
         [Key]
-        public int UserID { get; set; }
-
-        [Required]
         public string Auth0Id { get; set; }
 
         [Required]
