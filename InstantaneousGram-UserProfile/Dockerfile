@@ -17,7 +17,7 @@ FROM build AS publish
 RUN dotnet publish "InstantaneousGram-UserProfile.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Copy the appsettings.json from the build context
-COPY --from=build /src/appsettings.json ./
+COPY --from=build ./appsettings.json ./
 
 FROM base AS final
 WORKDIR /app
