@@ -20,5 +20,5 @@ RUN dotnet publish "InstantaneousGram-ContentManagement.csproj" -c Release -o /a
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY /appsettings.json ./appsettings.json
+
 ENTRYPOINT ["dotnet", "InstantaneousGram-ContentManagement.dll"]
