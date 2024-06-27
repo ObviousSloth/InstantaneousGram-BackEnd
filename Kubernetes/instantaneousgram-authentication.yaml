@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instantaneousgram-authentication
+  namespace: instantaneousgram
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instantaneousgram-authentication
+  template:
+    metadata:
+      labels:
+        app: instantaneousgram-authentication
+    spec:
+      containers:
+      - name: instantaneousgram-authentication
+        image: slothh/instantaneousgram-authenticationservices:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:80"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: RabbitMQ__HostName
+          value: "rabbitmq"
+        - name: RabbitMQ__Port
+          value: "5672"
+        - name: RabbitMQ__UserName
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: rabbitmq-username
+        - name: RabbitMQ__Password
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: rabbitmq-password
+        - name: Auth0__ClientId
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-client-id
+        - name: Auth0__ClientSecret
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-client-secret
+        - name: Auth0__ApiAudience
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-api-audience
+        - name: Auth0__Domain
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-domain
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: instantaneousgram-apigateway-service
+  namespace: instantaneousgram
+spec:
+  type: NodePort
+  selector:
+    app: instantaneousgram-apigateway
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30001

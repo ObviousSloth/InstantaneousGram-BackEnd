@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instantaneousgram-contentmanagement
+  namespace: instantaneousgram
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: instantaneousgram-contentmanagement
+  template:
+    metadata:
+      labels:
+        app: instantaneousgram-contentmanagement
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: instantaneousgram-contentmanagement
+        image: slothh/instantaneousgram-contentmanagement:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:80"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: RabbitMQ__HostName
+          value: rabbitmq.instantaneousgram.svc.cluster.local
+        - name: RabbitMQ__Port
+          value: "5672"
+        - name: RabbitMQ__UserName
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: rabbitmq-username
+        - name: RabbitMQ__Password
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: rabbitmq-password
+        - name: Auth0__ClientId
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-client-id
+        - name: Auth0__ClientSecret
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-client-secret
+        - name: Auth0__ApiAudience
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-api-audience
+        - name: Auth0__Domain
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-domain
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: instantaneousgram-contentmanagement-clusterip
+  namespace: instantaneousgram
+spec:
+  type: ClusterIP
+  selector:
+    app: instantaneousgram-contentmanagement
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80        

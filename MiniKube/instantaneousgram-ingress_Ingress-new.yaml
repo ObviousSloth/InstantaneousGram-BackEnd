@@ -1,0 +1,64 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: instantaneousgram-ingress
+  namespace: instantaneousgram
+  uid: 6095f3b0-bec6-4561-8156-47013ab667a2
+  resourceVersion: '61091'
+  generation: 2
+  creationTimestamp: '2024-06-19T09:15:04Z'
+  annotations:
+    kubernetes.azure.com/tls-cert-keyvault-uri: https://instantkeyvault.vault.azure.net/certificates/NewCert
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: networking.k8s.io/v1
+      time: '2024-06-19T09:15:04Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:metadata:
+          f:annotations:
+            .: {}
+            f:kubernetes.azure.com/tls-cert-keyvault-uri: {}
+        f:spec:
+          f:ingressClassName: {}
+          f:rules: {}
+          f:tls: {}
+    - manager: nginx-ingress-controller
+      operation: Update
+      apiVersion: networking.k8s.io/v1
+      time: '2024-06-19T09:15:46Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:status:
+          f:loadBalancer:
+            f:ingress: {}
+      subresource: status
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  tls:
+    - hosts:
+        - instantaneousgram.ddns.net
+      secretName: keyvault-instantaneousgram-ingress
+  rules:
+    - host: instantaneousgram.ddns.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: instantaneousgram-userprofile-clusterip
+                port:
+                  number: 80
+          - path: /userprofile/(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: instantaneousgram-userprofile-clusterip
+                port:
+                  number: 80
+status:
+  loadBalancer:
+    ingress:
+      - ip: 52.254.98.212

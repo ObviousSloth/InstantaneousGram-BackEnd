@@ -396,3 +396,12 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+#Appsettings
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+InstantaneousGram-ImageAndVideoProcessing/.env
+Kubernetes/connection-string-configmap.yaml
+InstantaneousGram-ImageAndVideoProcessing/.env
+MiniKube/LoadTests/load-test-results.json

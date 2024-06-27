@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocelot-config
+  namespace: instantaneousgram
+data:
+  ocelot.json: |
+    {
+      "Routes": [
+        {
+          "ServiceName": "instantaneousgram-userprofile-clusterip",
+          "DownstreamPathTemplate": "/api/userprofile",
+          "DownstreamScheme": "http",
+          "UpstreamPathTemplate": "/userprofile",
+          "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+        },
+        {
+          "ServiceName": "instantaneousgram-userprofile-clusterip",
+          "DownstreamPathTemplate": "/api/Test",
+          "DownstreamScheme": "http",
+          "UpstreamPathTemplate": "/userprofile/test",
+          "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
+          "ServiceName": "instantaneousgram-userprofile-clusterip",
+          "DownstreamPathTemplate": "/api/Test/{id}",
+          "DownstreamScheme": "http",
+          "UpstreamPathTemplate": "/userprofile/test/{id}",
+          "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
+          "ServiceName": "instantaneousgram-userprofile-clusterip",
+          "DownstreamPathTemplate": "/api/Test",
+          "DownstreamScheme": "http",
+          "UpstreamPathTemplate": "/userprofile/test",
+          "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
+          "ServiceName": "instantaneousgram-userprofile-clusterip",
+          "DownstreamPathTemplate": "/api/Test/{id}",
+          "DownstreamScheme": "http",
+          "UpstreamPathTemplate": "/userprofile/test/{id}",
+          "UpstreamHttpMethod": [ "PUT", "DELETE" ]
+        },
+        {
+          "ServiceName": "instantaneousgram-likeandcomment-clusterip",
+          "DownstreamPathTemplate": "/api/likeandcomment",
+          "DownstreamScheme": "http",
+          "UpstreamPathTemplate": "/likeandcomment",
+          "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+        }
+      ],
+      "GlobalConfiguration": {
+        "ServiceDiscoveryProvider": {
+          "Namespace": "instantaneousgram",
+          "Type": "Kube"
+        }
+      }
+    }

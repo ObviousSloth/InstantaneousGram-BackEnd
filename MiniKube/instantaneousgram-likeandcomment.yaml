@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instantaneousgram-likeandcomment
+  namespace: instantaneousgram
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: instantaneousgram-likeandcomment
+  template:
+    metadata:
+      labels:
+        app: instantaneousgram-likeandcomment
+    spec:
+      containers:
+      - name: instantaneousgram-likeandcomment
+        image: slothh/instantaneousgram-likeandcomment:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:80"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: RabbitMQ__HostName
+          value: "rabbitmq.instantaneousgram.svc.cluster.local"
+        - name: RabbitMQ__Port
+          value: "5672"
+        - name: RabbitMQ__UserName
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: rabbitmq-username
+        - name: RabbitMQ__Password
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: rabbitmq-password
+        - name: Auth0__ClientId
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-client-id
+        - name: Auth0__ClientSecret
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-client-secret
+        - name: Auth0__ApiAudience
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-api-audience
+        - name: Auth0__Domain
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-auth0-credentials
+              key: auth0-domain
+        - name: CosmosDb__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials
+              key: cosmosdb-connection-string
+        - name: CosmosDb__DatabaseName
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials
+              key: cosmosdb-database-name
+        - name: CosmosDb__ContainerName
+          valueFrom:
+            secretKeyRef:
+              name: cosmosdb-credentials
+              key: cosmosdb-container-name
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: instantaneousgram-likeandcomment-clusterip
+  namespace: instantaneousgram
+spec:
+  type: ClusterIP
+  selector:
+    app: instantaneousgram-likeandcomment
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80

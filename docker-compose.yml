@@ -1,21 +1,114 @@
 version: '3'
 services:
-  instantaneousgram-user:
-    build: 
-      context: ./InstantaneousGram-Users
-      dockerfile: Dockerfile
-    ports:
-      - "5000:80"
-    environment:
-      - ASPNETCORE_URLS=http://+:80
-      - ASPNETCORE_ENVIRONMENT=Development
 
-  instantaneousgram-login:
-    build: 
-      context: ./Instantaneousgram-login
+  instantaneousgram-Apigateway:
+    build:
+      context: ./InstantaneousGram-ApiGateway
       dockerfile: Dockerfile
+    image: slothh/instantaneousgram-apigatewayservices:latest
     ports:
-      - "5002:80"
+      - "4999:80"
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network
+
+  instantaneousgram-UserProfile:
+    build: 
+      context: ./InstantaneousGram-UserProfile
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-userprofileservices:latest
+    ports:
+      - "5500:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+    networks:
+      - instantaneousgram-network
+
+  instantaneousgram-Authentication:
+    build: 
+      context: ./InstantaneousGram-Authentication
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-authenticationservices:latest
+    ports:
+      - "5501:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - instantaneousgram-network 
+
+  instantaneousgram-ImageAndVideoProcessing:
+    build: 
+      context: ./InstantaneousGram-ImageAndVideoProcessing
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-imageandvideoprocessing:latest
+    env_file:
+      - ./InstantaneousGram-ImageAndVideoProcessing/.env
+    ports:
+      - "5502:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+    networks:
+      - instantaneousgram-network
+
+  instantaneousgram-ContentManagement:
+    build: 
+      context: ./InstantaneousGram-ContentManagement
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-contentmanagement:latest
+    ports:
+      - "5503:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+    networks:
+      - instantaneousgram-network
+
+  instantaneousgram-LikeAndComment:
+    build: 
+      context: ./InstantaneousGram-LikeAndComment
+      dockerfile: Dockerfile
+    image: slothh/instantaneousgram-likeandcomment:latest
+    ports:
+      - "5504:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOSTNAME=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+    networks:
+      - instantaneousgram-network  
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - instantaneousgram-network
+
+networks:
+  instantaneousgram-network:
+    driver: bridge
