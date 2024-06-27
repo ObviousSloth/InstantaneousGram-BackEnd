@@ -33,8 +33,9 @@ var connection = factory.CreateConnection();
 builder.Services.AddSingleton(connection);
 builder.Services.AddSingleton<RabbitMQSubscriber>();
 
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IContentManagementRepository, ContentManagementRepository>();
 builder.Services.AddScoped<IContentManagementService, ContentManagementService>();
