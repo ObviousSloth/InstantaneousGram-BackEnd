@@ -18,11 +18,6 @@ RUN dotnet publish "InstantaneousGram-UserProfile.csproj" -c Release -o /app/pub
 
 FROM base AS final
 WORKDIR /app
-
-# Copy the published app from the publish stage
 COPY --from=publish /app/publish .
-
-# Copy the appsettings.json from the build context
-COPY appsettings.json ./
-
+COPY /appsettings.json ./appsettings.json
 ENTRYPOINT ["dotnet", "InstantaneousGram-UserProfile.dll"]
