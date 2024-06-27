@@ -35,10 +35,7 @@ namespace InstantaneousGram_LikesAndComments.Services
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                if (int.TryParse(message, out int userId))
-                {
-                    await HandleUserDeletion(userId);
-                }
+                await HandleUserDeletion(message);
             };
 
             _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
@@ -46,15 +43,15 @@ namespace InstantaneousGram_LikesAndComments.Services
             return Task.CompletedTask;
         }
 
-        private async Task HandleUserDeletion(int userId)
+        private async Task HandleUserDeletion(string userId)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
                 var commentRepository = scope.ServiceProvider.GetRequiredService<ICommentRepository>();
                 var likeRepository = scope.ServiceProvider.GetRequiredService<ILikeRepository>();
 
-                await commentRepository.DeleteCommentsByUserIdAsync(userId.ToString());
-                await likeRepository.DeleteLikesByUserIdAsync(userId.ToString());
+                await commentRepository.DeleteCommentsByUserIdAsync(userId);
+                await likeRepository.DeleteLikesByUserIdAsync(userId);
             }
         }
     }

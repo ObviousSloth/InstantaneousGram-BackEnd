@@ -30,22 +30,21 @@ namespace InstantaneousGram_ContentManagement.Managers
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                if (int.TryParse(message, out int userId))
-                {
-                  /*  await HandleUserDeletedEvent(userId);*/
-                }
+                var auth0Id = message; // Parse the Auth0Id directly
+
+                await HandleUserDeletedEvent(auth0Id);
             };
 
             _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
         }
-/*
-        private async Task HandleUserDeletedEvent(int userId)
+
+        private async Task HandleUserDeletedEvent(string auth0Id)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
                 var contentManagementService = scope.ServiceProvider.GetRequiredService<IContentManagementService>();
-                await contentManagementService.DeleteAllContentByUserAsync(userId);
+                await contentManagementService.DeleteAllContentByUserAsync(auth0Id);
             }
-        }*/
+        }
     }
 }

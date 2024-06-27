@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using InstantaneousGram_ImageAndVideoProcessing.Services;
 
 namespace InstantaneousGram_ImageAndVideoProcessing.Managers
 {
@@ -19,7 +20,7 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Managers
             _channel.ExchangeDeclare(exchange: "user_deletion_exchange", type: ExchangeType.Fanout);
         }
 
-        public void SubscribeToUserDeletedEvent(Func<int, Task> handleUserDeletedAsync)
+        public void SubscribeToUserDeletedEvent(Func<string, Task> handleUserDeletedAsync)
         {
             var queueName = _channel.QueueDeclare().QueueName;
             _channel.QueueBind(queue: queueName, exchange: "user_deletion_exchange", routingKey: "");
@@ -29,14 +30,15 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Managers
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                if (int.TryParse(message, out int userId))
+                _logger.LogInformation($"Received user deletion event for user ID: {message}");
+                try
                 {
-                    _logger.LogInformation($"Received user deletion event for user ID: {userId}");
-                    await handleUserDeletedAsync(userId);
+                    await handleUserDeletedAsync(message);
+                    _logger.LogInformation($"Successfully handled user deletion event for user ID: {message}");
                 }
-                else
+                catch (Exception ex)
                 {
-                    _logger.LogWarning($"Failed to parse user ID from message: {message}");
+                    _logger.LogError($"Error handling user deletion event for user ID: {message}: {ex.Message}");
                 }
             };
 

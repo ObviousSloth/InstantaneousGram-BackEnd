@@ -1,5 +1,5 @@
-﻿using Instantaneousgram_ContentManagement.Data;
-using InstantaneousGram_ContentManagement.Models;
+﻿using InstantaneousGram_ContentManagement.Models;
+using Instantaneousgram_ContentManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,9 +48,9 @@ namespace InstantaneousGram_ContentManagement.Repositories
             }
         }
 
-        public async Task<IEnumerable<ContentManagement>> GetContentsByUserIdAsync(string userId) // Corrected method
+        public async Task<IEnumerable<ContentManagement>> GetContentsByAuth0IdAsync(string auth0Id) // Changed method
         {
-            return await _context.ContentManagements.Where(c => c.UserID == userId).ToListAsync();
+            return await _context.ContentManagements.Where(c => c.Auth0Id == auth0Id).ToListAsync();
         }
     }
 }

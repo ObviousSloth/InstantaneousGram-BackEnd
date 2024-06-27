@@ -20,9 +20,19 @@ namespace InstantaneousGram_LikesAndComments.Controllers
         [HttpPost]
         public async Task<IActionResult> AddLike([FromBody] Like like)
         {
+            if (like == null || string.IsNullOrEmpty(like.UserId) || string.IsNullOrEmpty(like.PostId))
+            {
+                Console.WriteLine("Invalid like data received.");
+                return BadRequest("Invalid like data.");
+            }
+
+            Console.WriteLine($"Received request to add like for user {like.UserId} on post {like.PostId}");
             await _likeService.AddLikeAsync(like);
+            Console.WriteLine($"Like for user {like.UserId} on post {like.PostId} processed successfully.");
             return Ok();
         }
+
+
 
         [HttpDelete("{likeId}")]
         public async Task<IActionResult> DeleteLike(Guid likeId, [FromQuery] string userId)

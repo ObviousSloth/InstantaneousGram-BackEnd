@@ -28,10 +28,10 @@ namespace InstantaneousGram_UserProfile.Controllers
             return Ok(userProfiles);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserProfile(int id)
+        [HttpGet("{authId}")]
+        public async Task<IActionResult> GetUserProfile(string authId)
         {
-            var userProfile = await _userProfileService.GetUserProfileByIdAsync(id);
+            var userProfile = await _userProfileService.GetUserProfileByAuthIdAsync(authId);
             if (userProfile == null)
             {
                 return NotFound();
@@ -58,15 +58,15 @@ namespace InstantaneousGram_UserProfile.Controllers
                 return BadRequest(new { message = "Invalid input" });
             }
             await _userProfileService.CreateUserProfileAsync(userProfile);
-            return CreatedAtAction(nameof(GetUserProfile), new { id = userProfile.UserID }, userProfile);
+            return CreatedAtAction(nameof(GetUserProfile), new { authId = userProfile.Auth0Id }, userProfile);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserProfileById(int id, [FromBody] UserProfile userProfile)
+        [HttpPut("{authId}")]
+        public async Task<IActionResult> UpdateUserProfile(string authId, [FromBody] UserProfile userProfile)
         {
-            if (id != userProfile.UserID)
+            if (authId != userProfile.Auth0Id)
             {
-                return BadRequest();
+                return BadRequest("Auth0Id mismatch");
             }
             await _userProfileService.UpdateUserProfileAsync(userProfile);
             return NoContent();
@@ -83,11 +83,11 @@ namespace InstantaneousGram_UserProfile.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserProfile(int id)
+        [HttpDelete("{authId}")]
+        public async Task<IActionResult> DeleteUserProfile(string authId)
         {
-            await _userProfileService.DeleteUserProfileAsync(id);
-            _rabbitMqManager.PublishUserDeletedEvent(id);
+            await _userProfileService.DeleteUserProfileAsync(authId);
+            _rabbitMqManager.PublishUserDeletedEvent(authId);
             return NoContent();
         }
     }

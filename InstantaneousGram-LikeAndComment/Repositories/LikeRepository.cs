@@ -36,18 +36,38 @@ namespace InstantaneousGram_LikesAndComments.Repositories
 
         public async Task<Like> GetLikeByUserAndPostAsync(string userId, string postId)
         {
+            Console.WriteLine($"GetLikeByUserAndPostAsync called for user {userId} and post {postId}");
             var query = new QueryDefinition("SELECT * FROM c WHERE c.userId = @userId AND c.postId = @postId")
                 .WithParameter("@userId", userId)
                 .WithParameter("@postId", postId);
             var iterator = _container.GetItemQueryIterator<Like>(query);
             var result = await iterator.ReadNextAsync();
-            return result.FirstOrDefault();
+            var like = result.FirstOrDefault();
+
+            if (like != null)
+            {
+                Console.WriteLine($"Found existing like with ID {like.Id} for user {userId} on post {postId}");
+            }
+            else
+            {
+                Console.WriteLine($"No existing like found for user {userId} on post {postId}");
+            }
+
+            return like;
         }
 
         public async Task AddLikeAsync(Like like)
         {
-            like.Id = Guid.NewGuid();  // Ensure unique ID
-            await _container.CreateItemAsync(like, new PartitionKey(like.UserId));
+            Console.WriteLine($"AddLikeAsync called. Adding like with ID {like.Id} for user {like.UserId} on post {like.PostId}");
+            try
+            {
+                await _container.CreateItemAsync(like, new PartitionKey(like.UserId));
+                Console.WriteLine($"Like added with ID {like.Id} for user {like.UserId} on post {like.PostId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding like: {ex.Message}");
+            }
         }
 
         public async Task DeleteLikeAsync(Guid likeId, string userId)

@@ -32,11 +32,7 @@ namespace InstantaneousGram_LikesAndComments.Services
 
         public async Task DeleteCommentsByUserIdAsync(string userId)
         {
-            var comments = await _commentRepository.GetCommentsByUserIdAsync(userId);
-            foreach (var comment in comments)
-            {
-                await _commentRepository.DeleteCommentAsync(comment.Id, userId);
-            }
+            await _commentRepository.DeleteCommentsByUserIdAsync(userId);
         }
 
         public async Task<IEnumerable<Comment>> GetCommentsByUserAndPostAsync(string userId, string postId)
@@ -44,6 +40,4 @@ namespace InstantaneousGram_LikesAndComments.Services
             return await _commentRepository.GetCommentsByUserAndPostAsync(userId, postId);
         }
     }
-
-
 }

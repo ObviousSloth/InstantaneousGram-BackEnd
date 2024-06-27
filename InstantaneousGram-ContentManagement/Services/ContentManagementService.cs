@@ -34,18 +34,18 @@ namespace InstantaneousGram_ContentManagement.Services
             await _contentRepository.UpdateContentAsync(content);
         }
 
-/*        public async Task DeleteContentAsync(int id)
+        public async Task DeleteContentAsync(int id)
         {
             await _contentRepository.DeleteContentAsync(id);
         }
 
-        public async Task DeleteAllContentByUserAsync(int userId)
+        public async Task DeleteAllContentByUserAsync(string auth0Id) // Changed method
         {
-            var contents = await _contentRepository.GetContentsByUserIdAsync(userId);
+            var contents = await _contentRepository.GetContentsByAuth0IdAsync(auth0Id);
             foreach (var content in contents)
             {
                 await _contentRepository.DeleteContentAsync(content.PostID);
             }
-        }*/
+        }
     }
 }

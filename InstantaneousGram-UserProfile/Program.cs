@@ -74,7 +74,18 @@ builder.Services.AddSingleton<IConnection>(sp =>
         UserName = builder.Configuration["RabbitMQ:UserName"],
         Password = builder.Configuration["RabbitMQ:Password"]
     };
-    return factory.CreateConnection();
+    
+    try
+    {
+        var connection = factory.CreateConnection();
+        Console.WriteLine("Successfully connected to RabbitMQ");
+        return connection;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Failed to connect to RabbitMQ: {ex.Message}");
+        throw;
+    }
 });
 builder.Services.AddSingleton<RabbitMQManager>();
 

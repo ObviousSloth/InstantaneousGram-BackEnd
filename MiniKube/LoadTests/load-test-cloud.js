@@ -14,7 +14,7 @@ export let options = {
 };
 
 export default function () {
-  let res = http.get('http://instantaneousgram.ddns.net/userprofile/api/test');
+  let res = http.get('http://instantaneousgram.ddns.net/LikesAndComments/api/test');
   check(res, {
     'status was 200': (r) => r.status == 200,
     'response time was <= 200ms': (r) => r.timings.duration <= 200,

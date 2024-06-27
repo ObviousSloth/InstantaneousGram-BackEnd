@@ -4,7 +4,6 @@ using CloudinaryDotNet.Actions;
 using InstantaneousGram_ImageAndVideoProcessing.Models;
 using InstantaneousGram_ImageAndVideoProcessing.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InstantaneousGram_ImageAndVideoProcessing.Services
 {
@@ -50,7 +49,6 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Services
             await _imageAndVideoRepository.AddMediaAsync(metadata);
             return metadata;
         }
-
 
         public async Task<GetResourceResult> GetMediaAsync(string publicId)
         {

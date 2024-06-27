@@ -14,10 +14,10 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Services
             _logger = logger;
         }
 
-        public async Task HandleUserDeletedAsync(int userId)
+        public async Task HandleUserDeletedAsync(string userId)
         {
             _logger.LogInformation($"Handling deletion of all media for user ID: {userId}");
-            await _imageAndVideoService.DeleteMediaByUserIdAsync(userId.ToString());
+            await _imageAndVideoService.DeleteMediaByUserIdAsync(userId);
             _logger.LogInformation($"Completed deletion of all media for user ID: {userId}");
         }
     }

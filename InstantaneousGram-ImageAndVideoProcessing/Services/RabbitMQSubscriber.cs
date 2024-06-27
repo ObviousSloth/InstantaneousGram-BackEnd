@@ -31,10 +31,7 @@ public class RabbitMQSubscriber : BackgroundService
             var message = Encoding.UTF8.GetString(body);
             _logger.LogInformation($"Received message: {message}");
 
-            if (int.TryParse(message, out int userId))
-            {
-                await _imageAndVideoService.DeleteMediaByUserIdAsync(userId.ToString());
-            }
+            await _imageAndVideoService.DeleteMediaByUserIdAsync(message);
         };
 
         _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);

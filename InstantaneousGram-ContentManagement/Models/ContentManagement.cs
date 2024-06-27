@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace InstantaneousGram_ContentManagement.Models
 {
@@ -9,7 +9,7 @@ namespace InstantaneousGram_ContentManagement.Models
         public int PostID { get; set; }
 
         [Required]
-        public string UserID { get; set; }
+        public string Auth0Id { get; set; } // Changed UserID to Auth0Id
 
         [Required]
         public string MediaID { get; set; }

@@ -16,11 +16,11 @@ namespace InstantaneousGram_UserProfile.Managers
             _channel.ExchangeDeclare(exchange: "user_deletion_exchange", type: ExchangeType.Fanout);
         }
 
-        public void PublishUserDeletedEvent(int userId)
+        public void PublishUserDeletedEvent(string authId)
         {
-            var message = Encoding.UTF8.GetBytes(userId.ToString());
+            var message = Encoding.UTF8.GetBytes(authId);
             _channel.BasicPublish(exchange: "user_deletion_exchange", routingKey: "", basicProperties: null, body: message);
-            _logger.LogInformation($"Published user deletion event for user ID: {userId}");
+            _logger.LogInformation($"Published user deletion event for Auth0 ID: {authId}");
         }
     }
 }

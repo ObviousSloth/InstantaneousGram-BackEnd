@@ -5,6 +5,9 @@ using System.Net.Http;
 using InstantaneousGram_UserProfile.Models;
 using InstantaneousGram_UserProfile.Repositories;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InstantaneousGram_UserProfile.Services
 {
@@ -32,10 +35,6 @@ namespace InstantaneousGram_UserProfile.Services
             return await _userProfileRepository.GetAllAsync();
         }
 
-        public async Task<UserProfile> GetUserProfileByIdAsync(int id)
-        {
-            return await _userProfileRepository.GetByIdAsync(id);
-        }
         public async Task<UserProfile> GetUserProfileByAuthIdAsync(string authId)
         {
             return await _userProfileRepository.GetByAuthIdAsync(authId);
@@ -92,19 +91,19 @@ namespace InstantaneousGram_UserProfile.Services
             }
         }
 
-        public async Task DeleteUserProfileAsync(int id)
+        public async Task DeleteUserProfileAsync(string authId)
         {
-            var userProfile = await _userProfileRepository.GetByIdAsync(id);
+            var userProfile = await _userProfileRepository.GetByAuthIdAsync(authId);
             if (userProfile != null)
             {
-                await _userProfileRepository.DeleteAsync(id);
+                await _userProfileRepository.DeleteAsync(authId);
 
                 // Publish the deletion event
                 using (var channel = _rabbitMqConnection.CreateModel())
                 {
                     channel.ExchangeDeclare(exchange: "user_deletion", type: ExchangeType.Fanout);
 
-                    var message = JsonSerializer.Serialize(new { UserId = id });
+                    var message = JsonSerializer.Serialize(new { Auth0Id = authId });
                     var body = Encoding.UTF8.GetBytes(message);
 
                     channel.BasicPublish(exchange: "user_deletion", routingKey: "", basicProperties: null, body: body);

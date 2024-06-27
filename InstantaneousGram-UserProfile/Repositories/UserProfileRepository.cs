@@ -1,6 +1,8 @@
 ﻿using InstantaneousGram_UserProfile.Models;
 using InstantaneousGram_UserProfile.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InstantaneousGram_UserProfile.Repositories
 {
@@ -18,14 +20,11 @@ namespace InstantaneousGram_UserProfile.Repositories
             return await _context.UserProfiles.ToListAsync();
         }
 
-        public async Task<UserProfile> GetByIdAsync(int id)
-        {
-            return await _context.UserProfiles.FindAsync(id);
-        }
         public async Task<UserProfile> GetByAuthIdAsync(string authId)
         {
             return await _context.UserProfiles.FirstOrDefaultAsync(up => up.Auth0Id == authId);
         }
+
         public async Task AddAsync(UserProfile userProfile)
         {
             await _context.UserProfiles.AddAsync(userProfile);
@@ -38,9 +37,9 @@ namespace InstantaneousGram_UserProfile.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string authId)
         {
-            var userProfile = await _context.UserProfiles.FindAsync(id);
+            var userProfile = await _context.UserProfiles.FirstOrDefaultAsync(up => up.Auth0Id == authId);
             if (userProfile != null)
             {
                 _context.UserProfiles.Remove(userProfile);

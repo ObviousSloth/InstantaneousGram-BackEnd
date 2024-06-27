@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace InstantaneousGram_ImageAndVideoProcessing.Models
 {
@@ -8,7 +9,7 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Models
         public string Id { get; set; }
 
         [JsonProperty("userId")]
-        public string UserId { get; set; }
+        public string UserId { get; set; } // Keep this as userId for CosmosDB partition key
 
         [JsonProperty("url")]
         public string Url { get; set; }

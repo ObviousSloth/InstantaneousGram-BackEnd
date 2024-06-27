@@ -31,10 +31,9 @@ namespace InstantaneousGram_ContentManagement.Services
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
-                var userId = int.Parse(message);
+                var auth0Id = message; // Parse the Auth0Id directly
 
-               /* await _contentManagementService.DeleteAllContentByUserAsync(userId);
-*/
+                await _contentManagementService.DeleteAllContentByUserAsync(auth0Id);
             };
 
             channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);

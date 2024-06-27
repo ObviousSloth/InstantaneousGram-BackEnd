@@ -7,9 +7,9 @@ namespace InstantaneousGram_ImageAndVideoProcessing.Repositories
     public interface IImageAndVideoRepository
     {
         Task<IEnumerable<ImageOrVideoMetadata>> GetAllMediaByUserIdAsync(string userId);
-        Task<ImageOrVideoMetadata> GetMediaByIdAsync(string mediaId, string userId); // This is the correct method signature
+        Task<ImageOrVideoMetadata> GetMediaByIdAsync(string mediaId, string userId);
         Task AddMediaAsync(ImageOrVideoMetadata media);
         Task UpdateMediaAsync(ImageOrVideoMetadata media);
-        Task DeleteMediaAsync(string mediaId, string userId); // This is the correct method signature
+        Task DeleteMediaAsync(string mediaId, string userId);
     }
 }
