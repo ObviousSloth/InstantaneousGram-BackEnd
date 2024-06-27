@@ -7,7 +7,7 @@ on:
     branches: [main, Development]
 
 env:
-  AZURE_CONTAINER_REGISTRY: "instantaneousgramcontainerreg"
+  AZURE_CONTAINER_REGISTRY: "InstantKlusterRegistry"
   RESOURCE_GROUP: "InstantaneousGram"
   CLUSTER_NAME: "InstantKluster"
   NAMESPACE: "instantaneousgram"
@@ -19,7 +19,7 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     strategy:
       matrix:
         service:
