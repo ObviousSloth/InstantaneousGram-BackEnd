@@ -7,11 +7,11 @@ on:
     branches: [main, Development]
 
 env:
-  AZURE_CONTAINER_REGISTRY: "InstantKlusterRegistry"
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
   RESOURCE_GROUP: "InstantaneousGram"
   CLUSTER_NAME: "InstantKluster"
   NAMESPACE: "instantaneousgram"
-  IMAGE_PULL_SECRET_NAME: "your-image-pull-secret-name"
 
 jobs:
   buildAndDeploy:
@@ -40,15 +40,15 @@ jobs:
             echo '${{ secrets.CLOUDINARY_URL }}' > ./${{ matrix.service }}/.env
           fi
 
-      - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build and push image to ACR
+      - name: Build and push image to Docker Hub
         run: |
           LOWERCASE_SERVICE=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
-          az acr build --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${LOWERCASE_SERVICE}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.RESOURCE_GROUP }} -f ./${{ matrix.service }}/Dockerfile ./${{ matrix.service }}
+          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/${LOWERCASE_SERVICE}:${{ github.sha }}
+          docker build -t $IMAGE_NAME ./${{ matrix.service }}
+          docker push $IMAGE_NAME
 
       - name: Set up kubelogin for non-interactive login
         uses: azure/use-kubelogin@v1
@@ -73,9 +73,4 @@ jobs:
           manifests: ./Kubernetes/${{ env.LOWERCASE_SERVICE }}.yaml
           namespace: ${{ env.NAMESPACE }}
           images: |
-            ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.LOWERCASE_SERVICE }}:${{ github.sha }}
-
-        
-
-
-
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.LOWERCASE_SERVICE }}:${{ github.sha }}
