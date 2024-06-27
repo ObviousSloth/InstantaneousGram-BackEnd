@@ -64,7 +64,7 @@ jobs:
         uses: Azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: ./Kubernetes/${{ env.LOWERCASE_SERVICE }}.yaml
+          manifests: ./MiniKube/${{ env.LOWERCASE_SERVICE }}.yaml
           namespace: ${{ env.NAMESPACE }}
           images: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.LOWERCASE_SERVICE }}:latest
