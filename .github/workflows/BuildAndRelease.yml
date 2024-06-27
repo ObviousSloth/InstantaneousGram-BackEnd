@@ -14,7 +14,6 @@ jobs:
         microservice: 
           - InstantaneousGram-Authentication
           - InstantaneousGram-UserProfile
-          - InstantaneousGram-ApiGateway
           - InstantaneousGram-ContentManagement
           - InstantaneousGram-ImageAndVideoProcessing
           - InstantaneousGram-LikeAndComment
