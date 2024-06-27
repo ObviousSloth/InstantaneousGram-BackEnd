@@ -1,4 +1,4 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+#See https://aka.ms/containerfastmode to learn how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
@@ -18,6 +18,10 @@ RUN dotnet publish "InstantaneousGram-UserProfile.csproj" -c Release -o /app/pub
 
 FROM base AS final
 WORKDIR /app
+
+# Copy the published app from the publish stage
 COPY --from=publish /app/publish .
-COPY /appsettings.json ./
+
+
+
 ENTRYPOINT ["dotnet", "InstantaneousGram-UserProfile.dll"]
